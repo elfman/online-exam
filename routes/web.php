@@ -11,12 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('root');
+
+Route::get('/oauth/github', 'AuthController@redirectToProvider')->name('oauth.github.redirect');
+Route::get('/oauth/github/callback', 'AuthController@handleProviderCallback')->name('oauth.github.callback');
 
 Route::resource('papers', 'PapersController', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
