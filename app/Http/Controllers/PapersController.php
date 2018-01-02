@@ -6,22 +6,24 @@ use App\Models\Paper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaperRequest;
+use Illuminate\Support\Facades\Auth;
 
 class PapersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth');
     }
 
 	public function index()
 	{
-		$papers = Paper::paginate();
+		$papers = Paper::where('creator_id', Auth::id())->orderBy('created_at')->paginate(10);
 		return view('papers.index', compact('papers'));
 	}
 
-    public function show(Paper $paper)
+    public function show($id)
     {
+        $paper = Paper::find($id)->select('id', 'title', 'content', 'total_score', 'time_limit')->first();
         return view('papers.show', compact('paper'));
     }
 

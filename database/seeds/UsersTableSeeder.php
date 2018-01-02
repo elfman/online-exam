@@ -9,16 +9,17 @@ class UsersTableSeeder extends Seeder
     {
         $users = factory(User::class)
             ->times(10)
-            ->make()
-            ->each(function ($user, $i) {
-            if ($i == 0) {
-                $user->name = 'Harlan';
-                $user->email = 'luoxwen@gmail.com';
-            }
-        });
+            ->make();
 
         $user_array = $users->makeVisible(['password', 'remember_token'])->toArray();
 
         User::insert($user_array);
+
+        $user = User::find(1);
+        $user->name = 'Harlan';
+        $user->email = 'luoxwen@gmail.com';
+        $user->github_id = 948001;
+        $user->avatar = 'https://avatars0.githubusercontent.com/u/948001?v=4';
+        $user->save();
     }
 }

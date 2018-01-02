@@ -11,11 +11,11 @@ function genPaperContent(Faker $faker, $count = 20)
         $item['question'] = $faker->sentence();
         $item['type'] = $faker->randomElement(['single', 'multi', 'filling']);
         if ($item['type'] == 'single' || $item['type'] == 'multi') {
-            $answers = [];
+            $options = [];
             for ($j = 0; $j < 4; $j++) {
-                $answers[$j] = $faker->sentence();
+                $options[$j] = $faker->sentence();
             }
-            $item['answers'] = $answers;
+            $item['options'] = $options;
         }
         $item['score'] = 5;
         array_push($content, $item);
@@ -33,7 +33,7 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
 
     return [
         'title' => $faker->sentence(),
-        'content' => json_encode(genPaperContent($faker)),
+        'content' => genPaperContent($faker),
         'creator_id' => $faker->randomElement($users),
         'created_at' => $created_at,
         'updated_at' => $updated_at,

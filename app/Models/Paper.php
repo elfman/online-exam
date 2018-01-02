@@ -14,4 +14,12 @@ class Paper extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function setContentAttribute($value)
+    {
+        if (!is_string($value)) {
+            $value = json_encode($value, true);
+        }
+        $this->attributes['content'] = $value;
+    }
 }
