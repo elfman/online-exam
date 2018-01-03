@@ -4,23 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Paper extends Model
+class Score extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers'];
+    protected $fillable = ['user_id', 'paper_id', 'answers', 'score', 'start_time', 'complete_time'];
 
-    public function creator()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function setContentAttribute($value)
+    public function paper()
     {
-        if (!is_string($value)) {
-            $value = json_encode($value, true);
-        }
-        $this->attributes['content'] = $value;
+        return $this->belongsTo(Paper::class);
     }
 
     public function setAnswersAttribute($value)

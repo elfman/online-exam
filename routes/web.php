@@ -19,3 +19,7 @@ Route::get('/oauth/github', 'AuthController@redirectToProvider')->name('oauth.gi
 Route::get('/oauth/github/callback', 'AuthController@handleProviderCallback')->name('oauth.github.callback');
 
 Route::resource('papers', 'PapersController', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
+
+Route::get('/papers/{id}/start', 'PapersController@startTest')->name('papers.start');
+Route::post('/papers/submit', 'PapersController@submit')->name('papers.submit');
+Route::get('/myscores', 'PapersController@myScores')->name('papers.scores');

@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="{{ active_class(if_route('papers.index')) }}"><a href="{{ route('papers.index') }}">我的试卷</a></li>
-{{--                <li class="{{ active_class(if_route('users.papers')) }}"><a href="{{ route('users.papers') }}">已答试卷</a></li>--}}
+                <li class="{{ active_class(if_route('papers.scores')) }}"><a href="{{ route('papers.scores') }}">我的成绩</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

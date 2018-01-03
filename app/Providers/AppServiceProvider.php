@@ -16,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
 		\App\Models\User::observe(\App\Observers\UserObserver::class);
 		\App\Models\Paper::observe(\App\Observers\PaperObserver::class);
 
+		\Carbon\Carbon::setLocale('zh');
         //
     }
 

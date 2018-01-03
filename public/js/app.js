@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
@@ -90,9 +90,15 @@ module.exports = __webpack_require__(6);
 
 Vue.component('paper-component', __webpack_require__(2));
 
-var app = new Vue({
-  el: '#app'
-});
+// $.ajaxSetup({
+//     headers: {
+//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//     }
+// });
+
+// const app = new Vue({
+//     el: '#app'
+// });
 
 /***/ }),
 /* 2 */
@@ -101,13 +107,13 @@ var app = new Vue({
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(15)
+  __webpack_require__(3)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(8)
 /* script */
-var __vue_script__ = __webpack_require__(4)
+var __vue_script__ = __webpack_require__(9)
 /* template */
-var __vue_template__ = __webpack_require__(17)
+var __vue_template__ = __webpack_require__(10)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -147,260 +153,46 @@ module.exports = Component.exports
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/* globals __VUE_SSR_CONTEXT__ */
+// style-loader: Adds some css to the DOM by adding a <style> tag
 
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
+// load the styles
+var content = __webpack_require__(4);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(6)("6b36edec", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-70421e48\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PaperComponent.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-70421e48\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PaperComponent.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
 }
-
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+exports = module.exports = __webpack_require__(5)(undefined);
+// imports
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        paperJson: String,
-        url: String
-    },
-    data: function data() {
-        var paper = this.setPaper(this.paperJson);
-        var answers = this.initAnswers(paper.content);
-        return {
-            paper: paper,
-            answers: answers,
-            boxStatus: new Array(answers.length)
-        };
-    },
 
-    methods: {
-        setPaper: function setPaper(json) {
-            var paper = JSON.parse(json);
-            paper.content = JSON.parse(paper.content);
-            return paper;
-        },
-        initAnswers: function initAnswers(content) {
-            var answers = new Array(content.length);
-            content.forEach(function (question, index) {
-                if (question.type === 'single') {
-                    answers[index] = null;
-                } else if (question.type === 'multi') {
-                    answers[index] = [];
-                } else if (question.type === 'filling') {
-                    answers[index] = "";
-                }
-            });
-            return answers;
-        },
-        isDone: function isDone(answer) {
-            if (Array.isArray(answer)) {
-                return answer.length > 0;
-            }
-            return !!answer || answer === 0;
-        },
-        onInputChange: function onInputChange(event) {
-            var index = event.srcElement.dataset.index;
-            this.$set(this.boxStatus, index, this.isDone(this.answers[index]));
-        },
-        onSubmit: function onSubmit() {
-            $.post();
-        }
-    },
-    mounted: function mounted() {},
+// module
+exports.push([module.i, "\n.wrapper[data-v-70421e48] {\n  max-width: 700px;\n  margin: 0 auto;\n}\n.number-box[data-v-70421e48] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 250px;\n}\n.number-box .numbers[data-v-70421e48] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.number-box span[data-v-70421e48] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.number-box span.done[data-v-70421e48] {\n      background-color: #1cc091;\n}\n", ""]);
 
-    computed: {
-        doneCount: function doneCount() {
-            var count = 0;
-            for (item in this.boxStatus) {
-                if (item) {
-                    count++;
-                }
-            }
-            return count;
-        }
-    },
-    watch: {
-        paperJson: function paperJson(val) {
-            this.paper = this.setPaper(val);
-            this.answers = this.initAnswers(this.paper.content);
-            this.boxStatus = new Array(this.answers.length);
-        }
-    }
-});
+// exports
+
 
 /***/ }),
-/* 5 */,
-/* 6 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 7 */,
-/* 8 */
+/* 5 */
 /***/ (function(module, exports) {
 
 /*
@@ -482,11 +274,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -505,7 +293,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(14)
+var listToStyles = __webpack_require__(7)
 
 /*
 type StyleObject = {
@@ -707,7 +495,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 14 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /**
@@ -740,333 +528,617 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 8 */
+/***/ (function(module, exports) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+/* globals __VUE_SSR_CONTEXT__ */
 
-// load the styles
-var content = __webpack_require__(16);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(13)("6b36edec", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-70421e48\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PaperComponent.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-70421e48\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PaperComponent.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
 }
 
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(8)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.container[data-v-70421e48] {\n  max-width: 700px;\n}\n.number-box[data-v-70421e48] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 250px;\n}\n.number-box .numbers[data-v-70421e48] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.number-box span[data-v-70421e48] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.number-box span.done[data-v-70421e48] {\n      background-color: #1cc091;\n}\n", ""]);
-
-// exports
-
 
 /***/ }),
-/* 17 */
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        paperId: Number,
+        startUrl: String,
+        submitUrl: String
+    },
+    data: function data() {
+        return {
+            paper: null,
+            answers: null,
+            boxStatus: null,
+            sheetId: null,
+            loadingPaper: false,
+            modalTitle: null,
+            modalContent: null,
+            onModalConfirm: this.dismissModal
+        };
+    },
+
+    methods: {
+        startTest: function startTest() {
+            var _this = this;
+
+            if (this.loadingPaper) {
+                return;
+            }
+            this.loadingPaper = true;
+            $.get(this.startUrl, { force: true }, function (data) {
+                console.log(data);
+                _this.loadingPaper = false;
+                if (!data.error) {
+                    _this.sheetId = data.sheet_id, _this.paper = _this.parsePaper(data.paper);
+                    _this.answers = _this.initAnswers(_this.paper.content);
+                    _this.boxStatus = new Array(_this.answers.length);
+                }
+            });
+        },
+        parsePaper: function parsePaper(json) {
+            var paper = JSON.parse(json);
+            paper.content = JSON.parse(paper.content);
+            return paper;
+        },
+        initAnswers: function initAnswers(content) {
+            var answers = new Array(content.length);
+            content.forEach(function (question, index) {
+                if (question.type === 'single') {
+                    answers[index] = null;
+                } else if (question.type === 'multi') {
+                    answers[index] = [];
+                } else if (question.type === 'filling') {
+                    answers[index] = "";
+                }
+            });
+            return answers;
+        },
+        isDone: function isDone(answer) {
+            if (Array.isArray(answer)) {
+                return answer.length > 0;
+            }
+            return !!answer || answer === 0;
+        },
+        onInputChange: function onInputChange(event) {
+            var index = event.srcElement.dataset.index;
+            this.$set(this.boxStatus, index, this.isDone(this.answers[index]));
+        },
+        onSubmit: function onSubmit() {
+            var _this2 = this;
+
+            $.ajax({
+                url: this.submitUrl,
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: JSON.stringify({
+                    sheet_id: this.sheetId,
+                    answers: this.answers
+                }),
+                success: function success(data) {
+                    if (!data.error) {
+                        _this2.showScoreModal(data.score);
+                    }
+                }
+            });
+        },
+        showModal: function showModal(title, content, onConfirm) {
+            this.modalTitle = title;
+            this.modalContent = content;
+            this.onModalConfirm = onConfirm ? onConfirm : this.dismissModal;
+            $('#modal').modal('show');
+        },
+        showSubmitConfirmModal: function showSubmitConfirmModal() {
+            var title = '确认提交？';
+            var content = this.doneCount === this.boxStatus.length ? '已完成所有题目！' : '\u90E8\u5206\u9898\u76EE\u5C1A\u672A\u5B8C\u6210\uFF08' + this.doneCount + '/' + this.boxStatus.length + '\uFF09\uFF0C\u662F\u5426\u786E\u8BA4\u63D0\u4EA4\uFF1F';
+            var onConfirm = this.onSubmit;
+            this.showModal(title, content, onConfirm);
+        },
+        showScoreModal: function showScoreModal(score) {
+            var title = '成绩';
+            var content = '\u60A8\u7684\u5206\u6570\u4E3A' + score + '\u5206';
+            var onConfirm = function onConfirm() {
+                window.location.replace('/myscores');
+            };
+            this.showModal(title, content, onConfirm);
+        },
+        dismissModal: function dismissModal() {
+            $('#modal').modal('hide');
+        }
+    },
+    //        mounted() {
+    //        },
+    computed: {
+        doneCount: function doneCount() {
+            var count = 0;
+            for (var i = 0; i < this.boxStatus.length; i++) {
+                if (this.boxStatus[i]) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+    //        watch: {
+    //        }
+});
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "panel container" }, [
-    _c("div", { staticClass: "panel-heading" }, [
-      _c("h3", { staticClass: "text-center" }, [
-        _vm._v(_vm._s(_vm.paper.title))
-      ]),
-      _vm._v(" "),
-      _c("h5", { staticClass: "text-center" }, [
-        _vm._v(
-          "总分：" +
-            _vm._s(_vm.paper.total_score) +
-            " 限时：" +
-            _vm._s(_vm.paper.time_limit)
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "panel-body" },
-      _vm._l(_vm.paper.content, function(item, index) {
-        return _c(
-          "div",
-          { staticClass: "row form-group", attrs: { id: "question" + index } },
-          [
-            _c("h5", [
-              _vm._v(
-                _vm._s(index + 1) +
-                  ". " +
-                  _vm._s(item.question) +
-                  "   (" +
-                  _vm._s(item.score) +
-                  "分)"
+  return _c("div", { staticClass: "wrapper" }, [
+    _vm.loadingPaper
+      ? _c("div", { staticClass: "text-center" }, [_vm._v("正在载入...")])
+      : !_vm.paper
+        ? _c("div", { staticClass: "text-center" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary btn-lg",
+                on: { click: _vm.startTest }
+              },
+              [_vm._v("开始测试")]
+            )
+          ])
+        : _c("div", { staticClass: "panel" }, [
+            _c("div", { staticClass: "panel-heading" }, [
+              _c("h3", { staticClass: "text-center" }, [
+                _vm._v(_vm._s(_vm.paper.title))
+              ]),
+              _vm._v(" "),
+              _c("h5", { staticClass: "text-center" }, [
+                _vm._v(
+                  "总分：" +
+                    _vm._s(_vm.paper.total_score) +
+                    " 限时：" +
+                    _vm._s(_vm.paper.time_limit)
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "panel-body" },
+              _vm._l(_vm.paper.content, function(item, index) {
+                return _c(
+                  "div",
+                  {
+                    staticClass: "row form-group",
+                    attrs: { id: "question" + index }
+                  },
+                  [
+                    _c("h5", [
+                      _vm._v(
+                        _vm._s(index + 1) +
+                          ". " +
+                          _vm._s(item.question) +
+                          "   (" +
+                          _vm._s(item.score) +
+                          "分)"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      [
+                        _vm._l(item.options, function(option, n) {
+                          return item.type === "single"
+                            ? _c("div", { staticClass: "radio" }, [
+                                _c("label", [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.answers[index],
+                                        expression: "answers[index]"
+                                      }
+                                    ],
+                                    attrs: {
+                                      type: "radio",
+                                      name: "q" + index,
+                                      "data-index": index
+                                    },
+                                    domProps: {
+                                      value: n,
+                                      checked: _vm._q(_vm.answers[index], n)
+                                    },
+                                    on: {
+                                      change: [
+                                        function($event) {
+                                          _vm.$set(_vm.answers, index, n)
+                                        },
+                                        _vm.onInputChange
+                                      ]
+                                    }
+                                  }),
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(option) +
+                                      "\n                        "
+                                  )
+                                ])
+                              ])
+                            : _vm._e()
+                        }),
+                        _vm._v(" "),
+                        _vm._l(item.options, function(option, n) {
+                          return item.type === "multi"
+                            ? _c("div", { staticClass: "checkbox" }, [
+                                _c("label", [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.answers[index],
+                                        expression: "answers[index]"
+                                      }
+                                    ],
+                                    attrs: {
+                                      type: "checkbox",
+                                      name: "q" + index,
+                                      "data-index": index
+                                    },
+                                    domProps: {
+                                      value: n,
+                                      checked: Array.isArray(_vm.answers[index])
+                                        ? _vm._i(_vm.answers[index], n) > -1
+                                        : _vm.answers[index]
+                                    },
+                                    on: {
+                                      change: [
+                                        function($event) {
+                                          var $$a = _vm.answers[index],
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = n,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.answers[
+                                                  index
+                                                ] = $$a.concat([$$v]))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.answers[index] = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.$set(_vm.answers, index, $$c)
+                                          }
+                                        },
+                                        _vm.onInputChange
+                                      ]
+                                    }
+                                  }),
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(option) +
+                                      "\n                        "
+                                  )
+                                ])
+                              ])
+                            : _vm._e()
+                        }),
+                        _vm._v(" "),
+                        item.type === "filling"
+                          ? _c("div", { staticClass: "form-group" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.answers[index],
+                                    expression: "answers[index]"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  name: "q" + index,
+                                  "data-index": index
+                                },
+                                domProps: { value: _vm.answers[index] },
+                                on: {
+                                  change: _vm.onInputChange,
+                                  input: [
+                                    function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.answers,
+                                        index,
+                                        $event.target.value
+                                      )
+                                    },
+                                    _vm.onInputChange
+                                  ]
+                                }
+                              })
+                            ])
+                          : _vm._e()
+                      ],
+                      2
+                    )
+                  ]
+                )
+              })
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "panel panel-default number-box" }, [
+              _c("div", { staticClass: "panel-heading" }, [_vm._v("完成状态")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "panel-body" }, [
+                _c(
+                  "div",
+                  { staticClass: "numbers" },
+                  _vm._l(_vm.boxStatus, function(item, index) {
+                    return _c("span", { class: { done: item } }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(index + 1) +
+                          "\n                "
+                      )
+                    ])
+                  })
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-center" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary btn-lg",
+                  staticStyle: { width: "200px" },
+                  on: { click: _vm.showSubmitConfirmModal }
+                },
+                [_vm._v("\n                提交\n            ")]
               )
             ]),
             _vm._v(" "),
             _c(
               "div",
+              {
+                staticClass: "modal fade",
+                attrs: { role: "dialog", id: "modal" }
+              },
               [
-                _vm._l(item.options, function(option, n) {
-                  return item.type === "single"
-                    ? _c("div", { staticClass: "radio" }, [
-                        _c("label", [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.answers[index],
-                                expression: "answers[index]"
-                              }
-                            ],
-                            attrs: {
-                              type: "radio",
-                              name: "q" + index,
-                              "data-index": index
-                            },
-                            domProps: {
-                              value: n,
-                              checked: _vm._q(_vm.answers[index], n)
-                            },
-                            on: {
-                              change: [
-                                function($event) {
-                                  _vm.$set(_vm.answers, index, n)
-                                },
-                                _vm.onInputChange
-                              ]
-                            }
-                          }),
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(option) +
-                              "\n                    "
-                          )
-                        ])
-                      ])
-                    : _vm._e()
-                }),
-                _vm._v(" "),
-                _vm._l(item.options, function(option, n) {
-                  return item.type === "multi"
-                    ? _c("div", { staticClass: "checkbox" }, [
-                        _c("label", [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.answers[index],
-                                expression: "answers[index]"
-                              }
-                            ],
-                            attrs: {
-                              type: "checkbox",
-                              name: "q" + index,
-                              "data-index": index
-                            },
-                            domProps: {
-                              value: n,
-                              checked: Array.isArray(_vm.answers[index])
-                                ? _vm._i(_vm.answers[index], n) > -1
-                                : _vm.answers[index]
-                            },
-                            on: {
-                              change: [
-                                function($event) {
-                                  var $$a = _vm.answers[index],
-                                    $$el = $event.target,
-                                    $$c = $$el.checked ? true : false
-                                  if (Array.isArray($$a)) {
-                                    var $$v = n,
-                                      $$i = _vm._i($$a, $$v)
-                                    if ($$el.checked) {
-                                      $$i < 0 &&
-                                        (_vm.answers[index] = $$a.concat([$$v]))
-                                    } else {
-                                      $$i > -1 &&
-                                        (_vm.answers[index] = $$a
-                                          .slice(0, $$i)
-                                          .concat($$a.slice($$i + 1)))
-                                    }
-                                  } else {
-                                    _vm.$set(_vm.answers, index, $$c)
-                                  }
-                                },
-                                _vm.onInputChange
-                              ]
-                            }
-                          }),
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(option) +
-                              "\n                    "
-                          )
-                        ])
-                      ])
-                    : _vm._e()
-                }),
-                _vm._v(" "),
-                item.type === "filling"
-                  ? _c("div", { staticClass: "form-group" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.answers[index],
-                            expression: "answers[index]"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          name: "q" + index,
-                          "data-index": index
+                _c("div", { staticClass: "modal-dialog" }, [
+                  _c("div", { staticClass: "modal-content" }, [
+                    _c("div", { staticClass: "modal-header" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: { "data-dismiss": "modal" }
                         },
-                        domProps: { value: _vm.answers[index] },
-                        on: {
-                          change: _vm.onInputChange,
-                          input: [
-                            function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(_vm.answers, index, $event.target.value)
-                            },
-                            _vm.onInputChange
-                          ]
-                        }
-                      })
+                        [_vm._v("×")]
+                      ),
+                      _vm._v(" "),
+                      _c("h4", [_vm._v(_vm._s(_vm.modalTitle))])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("p", [_vm._v(_vm._s(_vm.modalContent))])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-footer" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-default",
+                          attrs: { "data-dismiss": "modal" }
+                        },
+                        [_vm._v("取消")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { "data-dismiss": "modal" },
+                          on: { click: _vm.onModalConfirm }
+                        },
+                        [_vm._v("确认")]
+                      )
                     ])
-                  : _vm._e()
-              ],
-              2
+                  ])
+                ])
+              ]
             )
-          ]
-        )
-      })
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "panel panel-default number-box" }, [
-      _c("div", { staticClass: "panel-heading" }, [_vm._v("完成状态")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "panel-body" }, [
-        _c(
-          "div",
-          { staticClass: "numbers" },
-          _vm._l(_vm.boxStatus, function(item, index) {
-            return _c("span", { class: { done: item } }, [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(index + 1) +
-                  "\n                "
-              )
-            ])
-          })
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: { role: "dialog", id: "confirmModal" }
-      },
-      [
-        _c("div", { staticClass: "modal-dialog" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _vm._m(1),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-body" }, [
-              _c("p", [
-                _vm._v(
-                  _vm._s(
-                    _vm.doneCount === _vm.boxStatus.length
-                      ? "已完成所有题目！"
-                      : "部分题目尚未完成（" +
-                        _vm.doneCount +
-                        "/" +
-                        _vm.boxStatus.length +
-                        "），是否确认提交？"
-                  )
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._m(2)
           ])
-        ])
-      ]
-    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "text-center" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-primary btn-lg",
-          staticStyle: { width: "200px" },
-          attrs: { "data-toggle": "modal", "data-target": "#confirmModal" }
-        },
-        [_vm._v("提交")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c(
-        "button",
-        { staticClass: "close", attrs: { "data-dismiss": "modal" } },
-        [_vm._v("×")]
-      ),
-      _vm._v(" "),
-      _c("h4", [_vm._v("确认提交？")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { "data-dismiss": "modal" } },
-        [_vm._v("确认")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -1075,6 +1147,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-70421e48", module.exports)
   }
 }
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

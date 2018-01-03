@@ -9,7 +9,7 @@ function genPaperContent(Faker $faker, $count = 20)
     for ($i = 0; $i < $count; $i++) {
         $item = [];
         $item['question'] = $faker->sentence();
-        $item['type'] = $faker->randomElement(['single', 'multi', 'filling']);
+        $item['type'] = $faker->randomElement(['single', 'multi']);
         if ($item['type'] == 'single' || $item['type'] == 'multi') {
             $options = [];
             for ($j = 0; $j < 4; $j++) {
@@ -23,6 +23,8 @@ function genPaperContent(Faker $faker, $count = 20)
     return $content;
 }
 
+
+
 $factory->define(App\Models\Paper::class, function (Faker $faker) {
     static $users;
 
@@ -31,9 +33,13 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
     $updated_at = $faker->dateTimeThisMonth();
     $created_at = $faker->dateTimeThisMonth($updated_at);
 
+    $content = genPaperContent($faker);
+    $answers = genAnswers($faker, $content);
+
     return [
         'title' => $faker->sentence(),
-        'content' => genPaperContent($faker),
+        'content' => $content,
+        'answers' => $answers,
         'creator_id' => $faker->randomElement($users),
         'created_at' => $created_at,
         'updated_at' => $updated_at,

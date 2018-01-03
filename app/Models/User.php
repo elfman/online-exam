@@ -31,4 +31,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Paper::class);
     }
+
+    public function Scoress()
+    {
+        return $this->hasMany(Scores::class);
+    }
 }

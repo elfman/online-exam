@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -45,6 +44,5 @@
     </table>
 
     {!! $papers->render() !!}
-</div>
 
 @endsection

@@ -2,8 +2,14 @@
 
 @section('content')
 
-<div class="container">
-    <paper-component paper-json="{{ json_encode($paper) }}" url="{{ route('papers', $paper->id) }}"></paper-component>
-</div>
+    <paper-component :paper-id="{{ $paperId }}" start-url="{{ route('papers.start', $paperId) }}" submit-url="{{ route('papers.submit') }}"></paper-component>
 
+@endsection
+
+@section('script')
+    <script>
+         const app = new Vue({
+             el: '#app'
+         });
+    </script>
 @endsection
