@@ -13,6 +13,8 @@
  */
 
 Vue.component('paper-component', require('./components/PaperComponent.vue'));
+Vue.component('paper-editor', require('./components/PaperEditor.vue'));
+Vue.component('question', require('./components/Question.vue'));
 
 // $.ajaxSetup({
 //     headers: {

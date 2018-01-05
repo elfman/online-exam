@@ -7,6 +7,7 @@ use App\Models\Paper;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaperRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PapersController extends Controller
 {
@@ -33,8 +34,18 @@ class PapersController extends Controller
 
 	public function store(PaperRequest $request)
 	{
-		$paper = Paper::create($request->all());
-		return redirect()->route('papers.show', $paper->id)->with('message', 'Created successfully.');
+        $data = $request->only(['title', 'questions', 'time_limit', 'answers']);
+        $total_score = 0;
+
+        foreach ($data['questions'] as $question) {
+            $total_score += $question['score'];
+        }
+        $data['total_score'] = $total_score;
+		$paper = Paper::create($data);
+        return response()->json([
+            'error' => 0,
+            'id' => $paper->id,
+        ]);
 	}
 
 	public function edit(Paper $paper)
@@ -46,9 +57,19 @@ class PapersController extends Controller
 	public function update(PaperRequest $request, Paper $paper)
 	{
 		$this->authorize('update', $paper);
-		$paper->update($request->all());
+		$data = $request->only(['title', 'questions', 'time_limit', 'answers']);
+		$total_score = 0;
 
-		return redirect()->route('papers.show', $paper->id)->with('message', 'Updated successfully.');
+		foreach ($data['questions'] as $question) {
+		    $total_score += $question['score'];
+        }
+        $data['total_score'] = $total_score;
+
+		$paper->update($data);
+
+		return response()->json([
+		    'error' => 0,
+        ]);
 	}
 
 	public function destroy(Paper $paper)
