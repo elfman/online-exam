@@ -12,6 +12,12 @@
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+
+import Vue from 'vue';
+import store from './store/store';
+import router from './router';
+import App from './components/App.vue';
+
 Vue.component('paper-component', require('./components/PaperComponent.vue'));
 Vue.component('paper-editor', require('./components/PaperEditor.vue'));
 Vue.component('question', require('./components/Question.vue'));
@@ -22,6 +28,10 @@ Vue.component('question', require('./components/Question.vue'));
 //     }
 // });
 
-// const app = new Vue({
-//     el: '#app'
-// });
+const app = new Vue({
+    el: '#app',
+    store,
+    router,
+    template: '<App />',
+    components: { App },
+});
