@@ -71,14 +71,15 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
         props: {
-            paperId: Number,
             startUrl: String,
             submitUrl: String,
         },
         data() {
             return {
+                paperId: null,
                 paper: null,
                 answers: null,
                 boxStatus: null,
@@ -95,16 +96,17 @@
                     return;
                 }
                 this.loadingPaper = true;
-                $.get(this.startUrl, { force: true }, (data) => {
-                    console.log(data);
-                    this.loadingPaper = false;
-                    if (!data.error) {
-                        this.sheetId = data.sheet_id,
-                        this.paper = this.parsePaper(data.paper);
-                        this.answers = this.initAnswers(this.paper.content);
-                        this.boxStatus = new Array(this.answers.length);
-                    }
-                });
+                axios.get(`/api/papers/${this.paperId}/start`, { force: true })
+                    .then((data) => {
+                        console.log(data);
+                        this.loadingPaper = false;
+                        if (!data.error) {
+                            this.sheetId = data.sheet_id;
+                            this.paper = this.parsePaper(data.paper);
+                            this.answers = this.initAnswers(this.paper.content);
+                            this.boxStatus = new Array(this.answers.length);
+                        }
+                    });
             },
             parsePaper(json) {
                 let paper = JSON.parse(json);
@@ -135,6 +137,14 @@
                 this.$set(this.boxStatus, index, this.isDone(this.answers[index]))
             },
             onSubmit() {
+                axios.post('/api/papers/submit', {
+                    sheet_id: this.sheetId,
+                    answers: this.answers,
+                }).then((data) => {
+                    if (!data.error) {
+                        this.showScoreModal(data.score);
+                    }
+                });
                 $.ajax({
                     url: this.submitUrl,
                     type: 'POST',
@@ -178,8 +188,9 @@
                 $('#modal').modal('hide');
             }
         },
-//        mounted() {
-//        },
+        mounted() {
+            const id = this.$route.params.id;
+        },
         computed: {
             doneCount: function () {
                 let count = 0;

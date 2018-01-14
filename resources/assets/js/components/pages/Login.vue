@@ -94,7 +94,9 @@
             };
             let loginRules = {
                 email: registerRules.email,
-                password: registerRules.password,
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                ]
             };
 
             return {

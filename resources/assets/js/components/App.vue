@@ -1,5 +1,5 @@
 <template>
-    <el-container class="container">
+    <el-container>
         <el-header>
             <navbar></navbar>
         </el-header>
@@ -12,10 +12,7 @@
 <script>
     import Vue from 'vue';
     import Navbar from './user/Navbar.vue';
-    import ElementUI from 'element-ui'
-    import 'element-ui/lib/theme-chalk/index.css'
-
-    Vue.use(ElementUI);
+    import VueRouter from 'vue-router';
 
     export default {
         components: {

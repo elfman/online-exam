@@ -13,14 +13,14 @@ use JWTAuth;
 class AuthController extends Controller {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh']]);
     }
 
     public function login(UserRequest $request)
     {
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
-            $user = Auth::user();
+            $user = $this->guard()->user();
             return $this->respondSuccess($token, $user);
         }
 
@@ -40,6 +40,7 @@ class AuthController extends Controller {
         }
         $user = User::create($data);
         $token = $this->guard()->login($user);
+        $user = $this->guard()->user();
 
         return $this->respondSuccess($token, $user);
     }
@@ -60,7 +61,7 @@ class AuthController extends Controller {
 
     public function refresh()
     {
-        return $this->respondWithToken($this->guard()->refresh());
+        return $this->respondSuccess($this->guard()->refresh(), $this->guard()->user());
     }
 
     protected function respondSuccess($token, $user)
@@ -68,7 +69,7 @@ class AuthController extends Controller {
         return response()->json([
             'errors' => 0,
             'token' => $token,
-            'expires_in' => $this->guard()->factory()->getTTL() * 60,
+//            'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,

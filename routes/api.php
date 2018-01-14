@@ -16,12 +16,23 @@ use Illuminate\Http\Request;
 Route::group([
     'middleware' => 'api',
     'namespace' => 'Api',
-//    'prefix' => 'api',
+    'prefix' => 'auth',
 ], function ($router) {
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-    Route::post('register', 'AuthController@register');
+    $router->post('login', 'AuthController@login');
+    $router->post('logout', 'AuthController@logout');
+    $router->post('refresh', 'AuthController@refresh');
+    $router->post('me', 'AuthController@me');
+    $router->post('register', 'AuthController@register');
 
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'papers',
+], function ($router) {
+    $router->get('my', 'PapersController@myPapers');
+    $router->get('/{paper}/start', 'PapersController@startTest');
+    $router->get('/{paper}/edit', 'PapersController@edit');
+    $router->post('/{paper}/update', 'PapersController@update');
+    $router->post('/submit', 'PapersController@submit');
 });

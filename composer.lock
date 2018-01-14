@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "121276db2deffa3ee05d35e5068ee788",
+    "content-hash": "055ede47177c4b26282c9236ec58ed54",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -3096,16 +3096,16 @@
         },
         {
             "name": "tymon/jwt-auth",
-            "version": "dev-develop",
+            "version": "1.0.0-rc.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "d3f40ab90f451f265afb9775be9787b3accf1db2"
+                "reference": "6adc5c9df836405c47abc2f4c836872effb71ead"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/tymondesigns/jwt-auth/d3f40ab90f451f265afb9775be9787b3accf1db2.zip",
-                "reference": "d3f40ab90f451f265afb9775be9787b3accf1db2",
+                "url": "https://files.phpcomposer.com/files/tymondesigns/jwt-auth/6adc5c9df836405c47abc2f4c836872effb71ead.zip",
+                "reference": "6adc5c9df836405c47abc2f4c836872effb71ead",
                 "shasum": ""
             },
             "require": {
@@ -3122,7 +3122,7 @@
                 "illuminate/console": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.*",
                 "illuminate/database": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.*",
                 "illuminate/routing": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.*",
-                "mockery/mockery": ">=0.9.9",
+                "mockery/mockery": "0.9.*",
                 "phpunit/phpunit": "~4.8 || ~6.0"
             },
             "type": "library",
@@ -3166,7 +3166,7 @@
                 "jwt",
                 "laravel"
             ],
-            "time": "2017-12-14T18:52:20+00:00"
+            "time": "2017-08-30T17:57:47+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -4962,7 +4962,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "tymon/jwt-auth": 20
+        "tymon/jwt-auth": 5
     },
     "prefer-stable": false,
     "prefer-lowest": false,

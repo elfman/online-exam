@@ -13,7 +13,11 @@ class PapersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        if (isApiRequest()) {
+            $this->middleware('auth:api');
+        } else {
+            $this->middleware('auth');
+        }
     }
 
 	public function index()
@@ -22,8 +26,19 @@ class PapersController extends Controller
 		return view('papers.index', compact('papers'));
 	}
 
+    public function myPapers()
+    {
+        $papers = Paper::where('creator_id', Auth::id())->select(
+            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'participation_count', 'created_at')->orderBy('created_at')->get();
+        return response()->json([
+            'errors' => 0,
+            'papers' => $papers
+        ]);
+	}
+
     public function show($id)
     {
+
         return view('papers.show', ['paperId' => $id]);
     }
 
@@ -51,7 +66,14 @@ class PapersController extends Controller
 	public function edit(Paper $paper)
 	{
         $this->authorize('update', $paper);
-		return view('papers.create_and_edit', compact('paper'));
+        if (isApiRequest()) {
+            return response()->json([
+                'errors' => 0,
+                'paper' => $paper,
+            ]);
+        } else {
+            return view('papers.create_and_edit', compact('paper'));
+        }
 	}
 
 	public function update(PaperRequest $request, Paper $paper)

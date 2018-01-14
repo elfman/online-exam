@@ -40,37 +40,37 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
-        props: {
-            paperJson: String,
-            url: String,
-        },
         data() {
-            let paper;
-            if (this.paperJson) {
-                paper = JSON.parse(this.paperJson);
-                paper.questions = JSON.parse(paper.content);
-                let answers = JSON.parse(paper.answers);
-                paper.questions.forEach((item, index) => {
-                    item.answer = answers[index];
-                    item.title = item.question;
-                });
-            } else {
-                paper = {
+            return {
+                paper: {
                     title: '',
                     time_limit: 60,
                     questions: [],
                     answers: [],
-                }
-            }
-
-            return {
-                paper,
+                },
                 addingQuestion: false,
             }
         },
         methods: {
             loadPaper() {
+                const id = this.$route.params.id;
+                axios.get(`/api/papers/${id}/edit`).then(res => {
+                    console.log(res);
+                    const data = res.data;
+                    if (!data.errors) {
+                        const paper = data.paper;
+                        paper.questions = JSON.parse(paper.content);
+                        let answers = JSON.parse(paper.answers);
+                        paper.questions.forEach((item, index) => {
+                            item.answer = answers[index];
+                            item.title = item.question;
+                        });
+                        this.paper = paper;
+                    }
+                });
             },
             addQuestion() {
                 this.addingQuestion = true;
@@ -107,7 +107,7 @@
                 this.$set(questions, id + 1, temp);
             },
             save() {
-                let url = this.paper.id ? `/papers/${this.paper.id}` : '/papers/store';
+                let url = this.paper.id ? `/api/papers/${this.paper.id}/update` : '/api/papers/store';
                 let answers = [];
                 let questions = this.paper.questions.map((item) => {
                     answers.push(item.answer);
@@ -118,20 +118,13 @@
                         options: item.options,
                     }
                 });
-                axios({
-                    url,
-                    method: 'put',
-                    data: {
-                        title: this.paper.title,
-                        time_limit: this.paper.time_limit,
-                        questions,
-                        answers,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
+                axios.post(url, {
+                    title: this.paper.title,
+                    time_limit: this.paper.time_limit,
+                    questions,
+                    answers,
                 }).then(response => {
-                    if (!response.data.error) {
+                    if (!response.data.errors) {
                         this.$message({
                             message: this.paper.id ? '保存成功' : '创建成功',
                             type: 'success',
@@ -143,6 +136,11 @@
                         });
                     }
                 });
+            }
+        },
+        mounted() {
+            if (!this.$route.path.endsWith('create')) {
+                this.loadPaper();
             }
         }
     }

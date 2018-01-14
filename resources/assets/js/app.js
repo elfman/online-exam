@@ -14,24 +14,67 @@
 
 
 import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Vuex from 'vuex';
 import store from './store/store';
-import router from './router';
+import routes from './routes';
 import App from './components/App.vue';
+import ElementUI from 'element-ui';
+import axios from 'axios';
+import lodash from 'lodash';
+import types from './store/mutationTypes';
+import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.component('paper-component', require('./components/PaperComponent.vue'));
-Vue.component('paper-editor', require('./components/PaperEditor.vue'));
+Vue.component('paper-component', require('./components/pages/Paper.vue'));
+Vue.component('paper-editor', require('./components/pages/PaperEditor.vue'));
 Vue.component('question', require('./components/Question.vue'));
 
-// $.ajaxSetup({
-//     headers: {
-//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//     }
-// });
+Object.defineProperty(Vue.prototype, '$axios', { value: axios });
+Object.defineProperty(Vue.prototype, '$_', { value: lodash });
 
-const app = new Vue({
+axios.interceptors.response.use(res => {
+    if (res.status === 401) {
+        localStorage.removeItem('token');
+        router.push({ path: '/login' });
+    }
+    return res;
+}, error => {
+    return Promise.reject(error);
+});
+
+Vue.use(VueRouter);
+Vue.use(ElementUI);
+
+const router = new VueRouter({
+    routes,
+});
+
+global.app = new Vue({
     el: '#app',
     store,
     router,
     template: '<App />',
     components: { App },
+    beforeCreate: function () {
+        if (localStorage.token) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+            axios.post('api/auth/refresh', { token: localStorage.token }).then(res => {
+                let data = res.data;
+                if (!data.errors) {
+                    localStorage.setItem('token', data.token);
+                    store.commit(types.LOGIN_SUCCESS, data);
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
+                    // this.$axios.defaults.headers.common['Authorization'] = data.token;
+                } else {
+                    localStorage.removeItem('token');
+                    router.push({ path: '/login' });
+                }
+
+            }).catch(error => {
+                if (error.response.status === 401) {
+                    this.$router.push({ path: 'login' });
+                }
+            });
+        }
+    }
 });

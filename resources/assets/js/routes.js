@@ -5,28 +5,37 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import MyPapers from './components/pages/MyPapers.vue';
 import Login from './components/pages/Login.vue';
+import Paper from './components/pages/Paper.vue';
+import PaperEditor from './components/pages/PaperEditor.vue'
 import Register from './components/pages/Register.vue';
-
-Vue.use(Router);
 
 const routes = [
     {
         path: '/',
         name: 'mypapers',
         component: MyPapers,
-    },
-    {
+        alias: '/mypapers'
+    }, {
         path: '/login',
         name: 'login',
         component: Login,
-    },
-    {
+    }, {
         path: '/register',
         name: 'register',
-        component: Register,
+        component: Login,
+    }, {
+        path: '/papers/:id/edit',
+        name: 'editPaper',
+        component: PaperEditor,
+    }, {
+        path: '/papers/create',
+        name: 'createPaper',
+        component: PaperEditor,
+    }, {
+        path: '/papers/:id',
+        name: 'paper',
+        component: Paper,
     }
 ];
 
-export default new Router({
-    routes,
-});
+export default routes;

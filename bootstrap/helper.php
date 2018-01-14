@@ -29,3 +29,8 @@ function computeScore($answers, $paper) {
     }
     return $score;
 }
+
+function isApiRequest()
+{
+    return strpos(request()->url(), '/api/') !== false;
+}
