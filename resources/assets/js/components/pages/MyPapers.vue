@@ -1,10 +1,12 @@
 <template>
     <div>
+        <router-link to="createPaper"><el-button type="primary">添加新试卷</el-button></router-link>
         <el-table
                 :data="papers"
+                v-loading="loading"
         >
             <el-table-column
-                    prop="index"
+                    type="index"
                     label="#"
                     width="80"
             ></el-table-column>
@@ -43,8 +45,8 @@
                     label="操作"
             >
                 <template slot-scope="scope">
-                    <el-button type="text" @click="editPaper(scope.row.id)">编辑</el-button>
-                    <el-button type="text" @click="removePaper(scope.row)">删除</el-button>
+                    <router-link :to="{ name: 'editPaper', params: { id: scope.row.id } }"><el-button type="text">编辑</el-button></router-link>
+                    <el-button type="text" @click="removePaper(scope)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -52,23 +54,25 @@
 </template>
 
 <script>
-    import Navbar from '../user/Navbar.vue';
+    import axios from 'axios';
+
     export default {
-        components: { Navbar },
         data() {
             return {
                 papers: null,
+                loading: false,
             };
         },
         methods: {
             loadPapers() {
+                this.loading = true;
                 this.$axios.get('/api/papers/my').then(res => {
+                    this.loading = false;
                     let data = res.data;
                     if (!data.errors) {
                         this.papers = data.papers.map((item, index) => {
                             const content = JSON.parse(item.content);
                             return this.$_.assign({}, item, {
-                                index: index + 1,
                                 questions: content,
                             })
                         })
@@ -78,8 +82,14 @@
             editPaper(id) {
                 this.$router.push({ name: 'editPaper', params: { id: id } });
             },
-            removePaper(row) {
-
+            removePaper(scope) {
+                console.log(scope);
+                axios.get(`/api/papers/${scope.row.id}/remove`).then(res => {
+                    const data = res.data;
+                    if (!data.errors) {
+                        this.papers.splice(scope.$index, 1);
+                    }
+                });
             }
         },
         created: function() {

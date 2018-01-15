@@ -6,8 +6,8 @@ use App\Models\Score;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaperRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Auth;
+use Log;
 
 class PapersController extends Controller
 {
@@ -56,6 +56,8 @@ class PapersController extends Controller
             $total_score += $question['score'];
         }
         $data['total_score'] = $total_score;
+        $data['creator_id'] = Auth::id();
+        $data['content'] = $data['questions'];
 		$paper = Paper::create($data);
         return response()->json([
             'error' => 0,
@@ -98,6 +100,12 @@ class PapersController extends Controller
 	{
 		$this->authorize('destroy', $paper);
 		$paper->delete();
+
+		if (isApiRequest()) {
+		    return response()->json([
+		        'errors' => 0,
+            ]);
+        }
 
 		return redirect()->route('papers.index')->with('message', 'Deleted successfully.');
 	}

@@ -21308,8 +21308,8 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__user_Navbar_vue__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__user_Navbar_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__user_Navbar_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 //
 //
 //
@@ -21363,13 +21363,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: { Navbar: __WEBPACK_IMPORTED_MODULE_0__user_Navbar_vue___default.a },
     data: function data() {
         return {
-            papers: null
+            papers: null,
+            loading: false
         };
     },
 
@@ -21377,13 +21380,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadPapers: function loadPapers() {
             var _this = this;
 
+            this.loading = true;
             this.$axios.get('/api/papers/my').then(function (res) {
+                _this.loading = false;
                 var data = res.data;
                 if (!data.errors) {
                     _this.papers = data.papers.map(function (item, index) {
                         var content = JSON.parse(item.content);
                         return _this.$_.assign({}, item, {
-                            index: index + 1,
                             questions: content
                         });
                     });
@@ -21393,7 +21397,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         editPaper: function editPaper(id) {
             this.$router.push({ name: 'editPaper', params: { id: id } });
         },
-        removePaper: function removePaper(row) {}
+        removePaper: function removePaper(scope) {
+            var _this2 = this;
+
+            console.log(scope);
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + scope.row.id + '/remove').then(function (res) {
+                var data = res.data;
+                if (!data.errors) {
+                    _this2.papers.splice(scope.$index, 1);
+                }
+            });
+        }
     },
     created: function created() {
         this.loadPapers();
@@ -21551,11 +21565,32 @@ var render = function() {
     "div",
     [
       _c(
+        "router-link",
+        { attrs: { to: "createPaper" } },
+        [
+          _c("el-button", { attrs: { type: "primary" } }, [
+            _vm._v("添加新试卷")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
         "el-table",
-        { attrs: { data: _vm.papers } },
+        {
+          directives: [
+            {
+              name: "loading",
+              rawName: "v-loading",
+              value: _vm.loading,
+              expression: "loading"
+            }
+          ],
+          attrs: { data: _vm.papers }
+        },
         [
           _c("el-table-column", {
-            attrs: { prop: "index", label: "#", width: "80" }
+            attrs: { type: "index", label: "#", width: "80" }
           }),
           _vm._v(" "),
           _c("el-table-column", {
@@ -21594,16 +21629,21 @@ var render = function() {
                 fn: function(scope) {
                   return [
                     _c(
-                      "el-button",
+                      "router-link",
                       {
-                        attrs: { type: "text" },
-                        on: {
-                          click: function($event) {
-                            _vm.editPaper(scope.row.id)
+                        attrs: {
+                          to: {
+                            name: "editPaper",
+                            params: { id: scope.row.id }
                           }
                         }
                       },
-                      [_vm._v("编辑")]
+                      [
+                        _c("el-button", { attrs: { type: "text" } }, [
+                          _vm._v("编辑")
+                        ])
+                      ],
+                      1
                     ),
                     _vm._v(" "),
                     _c(
@@ -21612,7 +21652,7 @@ var render = function() {
                         attrs: { type: "text" },
                         on: {
                           click: function($event) {
-                            _vm.removePaper(scope.row)
+                            _vm.removePaper(scope)
                           }
                         }
                       },
@@ -81639,29 +81679,56 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
+        var _this = this;
+
+        var validateTimeLimit = function validateTimeLimit(rule, value, callback) {
+            var reg = /^[0-9]*[1-9][0-9]*$/;
+            if (!reg.test(value)) {
+                callback(new Error('请输入一个大于0的整数'));
+            } else {
+                callback();
+            }
+        };
+        var validateQuestions = function validateQuestions(rule, value, callback) {
+            if (_this.paper.questions.length === 0) {
+                callback('请输入至少一个题目');
+            } else {
+                callback();
+            }
+        };
+        var rules = {
+            title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+            time_limit: [{ validator: validateTimeLimit, trigger: 'blur' }],
+            questions: [{ validator: validateQuestions, trigger: 'submit' }]
+        };
         return {
+            rules: rules,
             paper: {
                 title: '',
                 time_limit: 60,
                 questions: [],
                 answers: []
             },
-            addingQuestion: false
+            addingQuestion: false,
+            loading: false
         };
     },
 
     methods: {
-        loadPaper: function loadPaper() {
-            var _this = this;
+        loadPaper: function loadPaper(id) {
+            var _this2 = this;
 
-            var id = this.$route.params.id;
+            this.loading = true;
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + id + '/edit').then(function (res) {
-                console.log(res);
+                _this2.loading = false;
                 var data = res.data;
                 if (!data.errors) {
                     var paper = data.paper;
@@ -81671,7 +81738,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         item.answer = answers[index];
                         item.title = item.question;
                     });
-                    _this.paper = paper;
+                    _this2.paper = paper;
                 }
             });
         },
@@ -81684,6 +81751,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         onCreateQuestion: function onCreateQuestion(question) {
             this.paper.questions.push(question);
             this.addingQuestion = false;
+            this.$refs.form.validateField('questions');
         },
         onSaveQuestion: function onSaveQuestion(id, question) {
             this.$set(this.paper.questions, id, question);
@@ -81710,42 +81778,64 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$set(questions, id + 1, temp);
         },
         save: function save() {
-            var _this2 = this;
+            var _this3 = this;
 
             var url = this.paper.id ? '/api/papers/' + this.paper.id + '/update' : '/api/papers/store';
             var answers = [];
-            var questions = this.paper.questions.map(function (item) {
-                answers.push(item.answer);
-                return {
-                    question: item.title,
-                    type: item.type,
-                    score: item.score,
-                    options: item.options
-                };
-            });
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(url, {
-                title: this.paper.title,
-                time_limit: this.paper.time_limit,
-                questions: questions,
-                answers: answers
-            }).then(function (response) {
-                if (!response.data.errors) {
-                    _this2.$message({
-                        message: _this2.paper.id ? '保存成功' : '创建成功',
-                        type: 'success'
+            this.$refs.form.validate(function (valid) {
+                if (valid) {
+                    var questions = _this3.paper.questions.map(function (item) {
+                        answers.push(item.answer);
+                        return {
+                            question: item.title,
+                            type: item.type,
+                            score: item.score,
+                            options: item.options
+                        };
                     });
-                } else {
-                    _this2.$message({
-                        message: _this2.paper.id ? '保存失败' : '创建失败',
-                        type: 'error'
+                    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(url, {
+                        title: _this3.paper.title,
+                        time_limit: _this3.paper.time_limit,
+                        questions: questions,
+                        answers: answers
+                    }).then(function (response) {
+                        if (!response.data.errors) {
+                            _this3.$message({
+                                message: _this3.paper.id ? '保存成功' : '创建成功',
+                                type: 'success'
+                            });
+                        } else {
+                            _this3.$message({
+                                message: _this3.paper.id ? '保存失败' : '创建失败',
+                                type: 'error'
+                            });
+                        }
                     });
                 }
             });
         }
     },
     mounted: function mounted() {
-        if (!this.$route.path.endsWith('create')) {
-            this.loadPaper();
+        if (this.$route.name === 'editPaper') {
+            var id = this.$route.params.id;
+            this.loadPaper(id);
+        }
+    },
+
+    watch: {
+        '$route': function $route(val) {
+            this.addingQuestion = false;
+            if (this.$route.name === 'createPaper') {
+                this.paper = {
+                    title: '',
+                    time_limit: 60,
+                    questions: [],
+                    answers: []
+                };
+            } else if (this.$route.name === 'editPaper') {
+                var id = /papers\/(\d+)\/edit/.exec(val.path)[1];
+                this.loadPaper(id);
+            }
         }
     }
 });
@@ -81764,7 +81854,18 @@ var render = function() {
     [
       _c(
         "el-form",
-        { attrs: { "label-width": "80px", model: _vm.paper } },
+        {
+          directives: [
+            {
+              name: "loading",
+              rawName: "v-loading",
+              value: _vm.loading,
+              expression: "loading"
+            }
+          ],
+          ref: "form",
+          attrs: { "label-width": "80px", model: _vm.paper, rules: _vm.rules }
+        },
         [
           _c(
             "el-form-item",
@@ -81785,7 +81886,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "el-form-item",
-            { attrs: { label: "类型", prop: "time" } },
+            { attrs: { label: "类型", prop: "time_limit" } },
             [
               _c(
                 "el-input",
@@ -81803,72 +81904,79 @@ var render = function() {
               )
             ],
             1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _vm._l(_vm.paper.questions, function(item, index) {
-            return _c(
-              "div",
-              { key: index, staticClass: "question" },
-              [
-                _c("question", {
-                  attrs: { question: item, id: index },
-                  on: {
-                    save: _vm.onSaveQuestion,
-                    remove: _vm.onRemoveQuestion,
-                    up: _vm.onQuestionUp,
-                    down: _vm.onQuestionDown
-                  }
-                })
-              ],
-              1
-            )
-          }),
-          _vm._v(" "),
-          _vm.addingQuestion
-            ? _c("question", {
-                attrs: { edit: true },
-                on: {
-                  create: _vm.onCreateQuestion,
-                  cancel: _vm.onQuestionCancel
-                }
-              })
-            : _vm._e(),
+          ),
           _vm._v(" "),
           _c(
-            "el-button",
-            {
-              staticClass: "create",
-              attrs: { type: "primary", icon: "el-icon-circle-plus" },
-              on: { click: _vm.addQuestion }
-            },
-            [_vm._v("添加新题目")]
-          )
-        ],
-        2
-      ),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c(
-        "el-row",
-        [
+            "div",
+            [
+              _vm._l(_vm.paper.questions, function(item, index) {
+                return _c(
+                  "div",
+                  { key: index, staticClass: "question" },
+                  [
+                    _c("question", {
+                      attrs: { question: item, id: index },
+                      on: {
+                        save: _vm.onSaveQuestion,
+                        remove: _vm.onRemoveQuestion,
+                        up: _vm.onQuestionUp,
+                        down: _vm.onQuestionDown
+                      }
+                    })
+                  ],
+                  1
+                )
+              }),
+              _vm._v(" "),
+              _vm.addingQuestion
+                ? _c("question", {
+                    attrs: { edit: true },
+                    on: {
+                      create: _vm.onCreateQuestion,
+                      cancel: _vm.onQuestionCancel
+                    }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                { attrs: { prop: "questions" } },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      staticClass: "create",
+                      attrs: { type: "primary", icon: "el-icon-circle-plus" },
+                      on: { click: _vm.addQuestion }
+                    },
+                    [_vm._v("添加新题目")]
+                  )
+                ],
+                1
+              )
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c("hr"),
+          _vm._v(" "),
           _c(
-            "el-col",
-            { attrs: { span: 4, offset: 10 } },
+            "el-row",
             [
               _c(
-                "el-button",
-                {
-                  attrs: { type: "primary", size: "large" },
-                  on: { click: _vm.save }
-                },
-                [_vm._v("保存试卷")]
+                "el-col",
+                { attrs: { span: 4, offset: 10 } },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary", size: "large" },
+                      on: { click: _vm.save }
+                    },
+                    [_vm._v("保存试卷")]
+                  )
+                ],
+                1
               )
             ],
             1
