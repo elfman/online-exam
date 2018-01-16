@@ -50,7 +50,6 @@
       },
     },
     mounted() {
-      console.log('moutned')
       this.loadScores();
     }
   }

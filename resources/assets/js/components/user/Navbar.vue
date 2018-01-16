@@ -1,25 +1,28 @@
 <template>
-  <div class="container">
+  <el-menu :default-active="defaultIndex" class="container navbar-inner" mode="horizontal" :router="true">
     <div class="logo">
-      Test Paper
+      线上考试系统
     </div>
-    <el-menu :default-active="defaultIndex" class="navbar-inner" mode="horizontal" :router="true">
       <el-menu-item index="mypapers" route="mypapers">我的试卷</el-menu-item>
       <el-menu-item index="myscores" route="myscores">我的成绩</el-menu-item>
-    </el-menu>
     <div class="right">
       <template>
-        <div class="user-info" v-if="token">
-          <img :src="avatar" alt="">
-          <span>{{ username }}</span>
-        </div>
+        <el-dropdown v-if="token" size="small" @command="handleCommand">
+          <div class="user-info">
+            <img :src="avatar" :alt="username">
+            <span>{{ username }}</span>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <div v-else>
-          <router-link to="/login">登录</router-link>
-          <router-link to="/register">注册</router-link>
+          <router-link to="/login"><el-button type="text" size="large">登录</el-button></router-link>
+          <router-link to="/register"><el-button type="text" size="large">注册</el-button></router-link>
         </div>
       </template>
     </div>
-  </div>
+  </el-menu>
 </template>
 
 <script>
@@ -49,6 +52,19 @@
         username: state => state.user.name,
         avatar: state => state.user.avatar,
       })
+    },
+    methods: {
+      handleCommand(command) {
+        switch (command) {
+          case 'logout': {
+            this.logout();
+            break;
+          }
+        }
+      },
+      logout() {
+        this.$store.dispatch('logout');
+      }
     }
   }
 </script>
@@ -74,6 +90,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 
     img {
       width: 36px;

@@ -18074,13 +18074,14 @@ module.exports = Cancel;
 
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = ({
-    LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-    LOGIN_FAILED: 'LOGIN_FAILED',
-    REGISTER_SUCCESS: 'REGISTER_SUCCESS',
-    REGISTER_FAILED: 'REGISTER_FAILED',
-    LOGOUT: 'LOGOUT',
-    LOAD_USER_FROM_LOCAL: 'LOAD_USER_FROM_LOCAL',
-    SET_AUTH_INFO: 'SET_AUTH_INFO'
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGIN_FAILED: 'LOGIN_FAILED',
+  REGISTER_SUCCESS: 'REGISTER_SUCCESS',
+  REGISTER_FAILED: 'REGISTER_FAILED',
+  LOGOUT: 'LOGOUT',
+  LOAD_USER_FROM_LOCAL: 'LOAD_USER_FROM_LOCAL',
+  SET_USER_INFO: 'SET_USER_INFO',
+  CLEAR_USER_INFO: 'CLEAR_USER_INFO'
 });
 
 /***/ }),
@@ -19796,7 +19797,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_element_ui_lib_theme_chalk_index_css__ = __webpack_require__(210);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_element_ui_lib_theme_chalk_index_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_element_ui_lib_theme_chalk_index_css__);
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -19829,51 +19829,50 @@ Object.defineProperty(__WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype, '$a
 Object.defineProperty(__WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype, '$_', { value: __WEBPACK_IMPORTED_MODULE_8_lodash___default.a });
 
 __WEBPACK_IMPORTED_MODULE_7_axios___default.a.interceptors.response.use(function (res) {
-    if (res.status === 401) {
-        localStorage.removeItem('token');
-        router.push({ path: '/login' });
-    }
-    return res;
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    router.push({ path: '/login' });
+  }
+  return res;
 }, function (error) {
-    return Promise.reject(error);
+  return Promise.reject(error);
 });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_element_ui___default.a);
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
-    routes: __WEBPACK_IMPORTED_MODULE_4__routes__["a" /* default */]
+  routes: __WEBPACK_IMPORTED_MODULE_4__routes__["a" /* default */]
 });
 
 global.app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
-    el: '#app',
-    store: __WEBPACK_IMPORTED_MODULE_3__store_store__["a" /* default */],
-    router: router,
-    template: '<App />',
-    components: { App: __WEBPACK_IMPORTED_MODULE_5__components_App_vue___default.a },
-    beforeCreate: function beforeCreate() {
-        var _this = this;
+  el: '#app',
+  store: __WEBPACK_IMPORTED_MODULE_3__store_store__["a" /* default */],
+  router: router,
+  template: '<App />',
+  components: { App: __WEBPACK_IMPORTED_MODULE_5__components_App_vue___default.a },
+  beforeCreate: function beforeCreate() {
+    var _this = this;
 
-        if (localStorage.token) {
-            __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-            __WEBPACK_IMPORTED_MODULE_7_axios___default.a.post('api/auth/refresh', { token: localStorage.token }).then(function (res) {
-                var data = res.data;
-                if (!data.errors) {
-                    localStorage.setItem('token', data.token);
-                    __WEBPACK_IMPORTED_MODULE_3__store_store__["a" /* default */].commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].LOGIN_SUCCESS, data);
-                    __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
-                    // this.$axios.defaults.headers.common['Authorization'] = data.token;
-                } else {
-                    localStorage.removeItem('token');
-                    router.push({ path: '/login' });
-                }
-            }).catch(function (error) {
-                if (error.response.status === 401) {
-                    _this.$router.push({ path: 'login' });
-                }
-            });
+    if (localStorage.token) {
+      __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+      __WEBPACK_IMPORTED_MODULE_7_axios___default.a.post('api/auth/refresh', { token: localStorage.token }).then(function (res) {
+        var data = res.data;
+        if (!data.errors) {
+          localStorage.setItem('token', data.token);
+          __WEBPACK_IMPORTED_MODULE_3__store_store__["a" /* default */].commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
+        } else {
+          localStorage.removeItem('token');
+          router.push({ path: '/login' });
         }
+      }).catch(function (error) {
+        if (error.response.status === 401) {
+          _this.$router.push({ path: 'login' });
+        }
+      });
     }
+  }
 });
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(27)))
 
@@ -20162,6 +20161,8 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vuex
 /* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mutationTypes__ = __webpack_require__(59);
+var _mutations;
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -20169,70 +20170,93 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var state = {
-    token: null,
-    name: null,
-    email: null,
-    avatar: null
+  token: null,
+  name: null,
+  email: null,
+  avatar: null
 };
 
 var getters = {
-    getToken: function getToken(state) {
-        return state.token;
-    }
+  getToken: function getToken(state) {
+    return state.token;
+  }
 };
 
 var actions = {
-    login: function login(_ref, data) {
-        var commit = _ref.commit;
+  login: function login(_ref, data) {
+    var commit = _ref.commit;
 
-        return new Promise(function () {
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/login', data).then(function (response) {
-                var data = response.data;
-                if (!data.errors) {
-                    window.localStorage.setItem('token', data.token);
-                    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-                    commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].LOGIN_SUCCESS, data);
-                    var redirect = global.app.$route.query.redirect;
-                    if (!redirect) {
-                        redirect = '/mypapers';
-                    }
-                    global.app.$router.push(redirect);
-                } else {
-                    commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].LOGIN_FAILED, data);
-                }
-            });
-        });
-    },
-    register: function register(_ref2, data) {
-        var commit = _ref2.commit;
+    return new Promise(function () {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/login', data).then(function (response) {
+        var data = response.data;
+        if (!data.errors) {
+          window.localStorage.setItem('token', data.token);
+          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          var redirect = global.app.$route.query.redirect;
+          if (!redirect) {
+            redirect = '/mypapers';
+          }
+          global.app.$router.replace(redirect);
+        }
+      });
+    });
+  },
+  register: function register(_ref2, data) {
+    var commit = _ref2.commit;
 
-        return new Promise(function () {
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/register', data).then(function (response) {
-                var data = response.data;
-                if (!data.errors) {
-                    window.localStorage.setItem('token', data.token);
-                    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-                    commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
-                } else {}
-            });
-        });
-    }
+    return new Promise(function () {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/register', data).then(function (response) {
+        var data = response.data;
+        if (!data.errors) {
+          window.localStorage.setItem('token', data.token);
+          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          var redirect = global.app.$route.query.redirect;
+          if (!redirect) {
+            redirect = '/mypapers';
+          }
+          global.app.$router.replace(redirect);
+        }
+      });
+    });
+  },
+  logout: function logout(_ref3) {
+    var commit = _ref3.commit;
+
+    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('api/auth/logout').then(function (res) {
+      var data = res.data;
+      if (!data.errors) {
+        window.localStorage.removeItem('token');
+        __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = '';
+        commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_USER_INFO);
+        app.$router.push('/login');
+      }
+    });
+  }
 };
 
-var mutations = _defineProperty({}, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].LOGIN_SUCCESS, function (state, data) {
-    state.token = data.token;
-    state.expires = Date.now() + data.expires_in * 1000;
-    state.email = data.user.email;
-    state.avatar = data.user.avatar;
-    state.name = data.user.name;
-    state.id = data.user.id;
-});
+var mutations = (_mutations = {}, _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, function (state, data) {
+  state.token = data.token;
+  state.expires = Date.now() + data.expires_in * 1000;
+  state.email = data.user.email;
+  state.avatar = data.user.avatar;
+  state.name = data.user.name;
+  state.id = data.user.id;
+}), _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_USER_INFO, function (state) {
+  state.token = null;
+  state.expires = null;
+  state.email = null;
+  state.avatar = null;
+  state.name = null;
+  state.id = null;
+}), _mutations);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    state: state,
-    getters: getters,
-    actions: actions,
-    mutations: mutations
+  state: state,
+  getters: getters,
+  actions: actions,
+  mutations: mutations
 });
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(27)))
 
@@ -21144,36 +21168,48 @@ module.exports = function spread(callback) {
 
 
 
+function requireAuth(to, from, next) {
+  if (!localStorage.token) {
+    next({
+      name: 'login',
+      query: { redirect: to.fullPath }
+    });
+  } else {
+    next();
+  }
+}
+
 var routes = [{
   path: '/',
   name: 'mypapers',
   component: __WEBPACK_IMPORTED_MODULE_0__components_pages_MyPapers_vue___default.a,
-  alias: '/mypapers'
+  alias: '/mypapers',
+  beforeEnter: requireAuth
 }, {
   path: '/login',
   name: 'login',
   component: __WEBPACK_IMPORTED_MODULE_1__components_pages_Login_vue___default.a,
   alias: '/register'
-  // }, {
-  //   path: '/register',
-  //   name: 'register',
-  //   component: Login,
 }, {
   path: '/papers/:id/edit',
   name: 'editPaper',
-  component: __WEBPACK_IMPORTED_MODULE_3__components_pages_PaperEditor_vue___default.a
+  component: __WEBPACK_IMPORTED_MODULE_3__components_pages_PaperEditor_vue___default.a,
+  beforeEnter: requireAuth
 }, {
   path: '/papers/create',
   name: 'createPaper',
-  component: __WEBPACK_IMPORTED_MODULE_3__components_pages_PaperEditor_vue___default.a
+  component: __WEBPACK_IMPORTED_MODULE_3__components_pages_PaperEditor_vue___default.a,
+  beforeEnter: requireAuth
 }, {
   path: '/papers/:id',
   name: 'paper',
-  component: __WEBPACK_IMPORTED_MODULE_2__components_pages_Test_vue___default.a
+  component: __WEBPACK_IMPORTED_MODULE_2__components_pages_Test_vue___default.a,
+  beforeEnter: requireAuth
 }, {
   path: '/myscores',
   name: 'myscores',
-  component: __WEBPACK_IMPORTED_MODULE_4__components_pages_Scores_vue___default.a
+  component: __WEBPACK_IMPORTED_MODULE_4__components_pages_Scores_vue___default.a,
+  beforeEnter: requireAuth
 }];
 
 /* harmony default export */ __webpack_exports__["a"] = (routes);
@@ -21419,7 +21455,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.logo[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 150px;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.right[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  margin-left: auto;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  padding-right: 10px;\n}\n.user-info[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.user-info img[data-v-d25756a6] {\n    width: 36px;\n    height: 36px;\n    border-radius: 50%;\n    margin-right: 8px;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.logo[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 150px;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.right[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  margin-left: auto;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  padding-right: 10px;\n}\n.user-info[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  cursor: pointer;\n}\n.user-info img[data-v-d25756a6] {\n    width: 36px;\n    height: 36px;\n    border-radius: 50%;\n    margin-right: 8px;\n}\n", ""]);
 
 // exports
 
@@ -21433,6 +21469,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(53);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
 //
 //
 //
@@ -21489,7 +21528,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     avatar: function avatar(state) {
       return state.user.avatar;
     }
-  }))
+  })),
+  methods: {
+    handleCommand: function handleCommand(command) {
+      switch (command) {
+        case 'logout':
+          {
+            this.logout();
+            break;
+          }
+      }
+    },
+    logout: function logout() {
+      this.$store.dispatch('logout');
+    }
+  }
 });
 
 /***/ }),
@@ -21501,36 +21554,25 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "div",
-    { staticClass: "container" },
+    "el-menu",
+    {
+      staticClass: "container navbar-inner",
+      attrs: {
+        "default-active": _vm.defaultIndex,
+        mode: "horizontal",
+        router: true
+      }
+    },
     [
-      _c("div", { staticClass: "logo" }, [_vm._v("\n    Test Paper\n  ")]),
+      _c("div", { staticClass: "logo" }, [_vm._v("\n    线上考试系统\n  ")]),
       _vm._v(" "),
-      _c(
-        "el-menu",
-        {
-          staticClass: "navbar-inner",
-          attrs: {
-            "default-active": _vm.defaultIndex,
-            mode: "horizontal",
-            router: true
-          }
-        },
-        [
-          _c(
-            "el-menu-item",
-            { attrs: { index: "mypapers", route: "mypapers" } },
-            [_vm._v("我的试卷")]
-          ),
-          _vm._v(" "),
-          _c(
-            "el-menu-item",
-            { attrs: { index: "myscores", route: "myscores" } },
-            [_vm._v("我的成绩")]
-          )
-        ],
-        1
-      ),
+      _c("el-menu-item", { attrs: { index: "mypapers", route: "mypapers" } }, [
+        _vm._v("我的试卷")
+      ]),
+      _vm._v(" "),
+      _c("el-menu-item", { attrs: { index: "myscores", route: "myscores" } }, [
+        _vm._v("我的成绩")
+      ]),
       _vm._v(" "),
       _c(
         "div",
@@ -21538,21 +21580,64 @@ var render = function() {
         [
           [
             _vm.token
-              ? _c("div", { staticClass: "user-info" }, [
-                  _c("img", { attrs: { src: _vm.avatar, alt: "" } }),
-                  _vm._v(" "),
-                  _c("span", [_vm._v(_vm._s(_vm.username))])
-                ])
+              ? _c(
+                  "el-dropdown",
+                  {
+                    attrs: { size: "small" },
+                    on: { command: _vm.handleCommand }
+                  },
+                  [
+                    _c("div", { staticClass: "user-info" }, [
+                      _c("img", {
+                        attrs: { src: _vm.avatar, alt: _vm.username }
+                      }),
+                      _vm._v(" "),
+                      _c("span", [_vm._v(_vm._s(_vm.username))])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "el-dropdown-menu",
+                      { attrs: { slot: "dropdown" }, slot: "dropdown" },
+                      [
+                        _c(
+                          "el-dropdown-item",
+                          { attrs: { command: "logout" } },
+                          [_vm._v("退出登录")]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
               : _c(
                   "div",
                   [
-                    _c("router-link", { attrs: { to: "/login" } }, [
-                      _vm._v("登录")
-                    ]),
+                    _c(
+                      "router-link",
+                      { attrs: { to: "/login" } },
+                      [
+                        _c(
+                          "el-button",
+                          { attrs: { type: "text", size: "large" } },
+                          [_vm._v("登录")]
+                        )
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("router-link", { attrs: { to: "/register" } }, [
-                      _vm._v("注册")
-                    ])
+                    _c(
+                      "router-link",
+                      { attrs: { to: "/register" } },
+                      [
+                        _c(
+                          "el-button",
+                          { attrs: { type: "text", size: "large" } },
+                          [_vm._v("注册")]
+                        )
+                      ],
+                      1
+                    )
                   ],
                   1
                 )
@@ -82471,7 +82556,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   mounted: function mounted() {
-    console.log('moutned');
     this.loadScores();
   }
 });

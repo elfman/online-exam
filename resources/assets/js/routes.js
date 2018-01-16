@@ -7,37 +7,49 @@ import Test from './components/pages/Test.vue';
 import PaperEditor from './components/pages/PaperEditor.vue';
 import Scores from './components/pages/Scores.vue';
 
+function requireAuth(to, from, next) {
+  if (!localStorage.token) {
+    next({
+      name: 'login',
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
+}
+
 const routes = [
   {
     path: '/',
     name: 'mypapers',
     component: MyPapers,
-    alias: '/mypapers'
+    alias: '/mypapers',
+    beforeEnter: requireAuth,
   }, {
     path: '/login',
     name: 'login',
     component: Login,
     alias: '/register',
-  // }, {
-  //   path: '/register',
-  //   name: 'register',
-  //   component: Login,
   }, {
     path: '/papers/:id/edit',
     name: 'editPaper',
     component: PaperEditor,
+    beforeEnter: requireAuth,
   }, {
     path: '/papers/create',
     name: 'createPaper',
     component: PaperEditor,
+    beforeEnter: requireAuth,
   }, {
     path: '/papers/:id',
     name: 'paper',
     component: Test,
+    beforeEnter: requireAuth,
   }, {
     path: '/myscores',
     name: 'myscores',
     component: Scores,
+    beforeEnter: requireAuth,
   }
 ];
 
