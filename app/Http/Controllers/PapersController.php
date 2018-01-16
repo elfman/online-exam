@@ -112,12 +112,31 @@ class PapersController extends Controller
 
     public function myScores()
     {
-        $scores = Score::where('user_id', Auth::id())->where('complete_time', '!=', null)->with('paper')->paginate(30);
+        $scores = Score::where('user_id', Auth::id())->with('paper');
+        if (isApiRequest()) {
+            $data = $scores->get()->map(function($score) {
+                return [
+                    'id' => $score->id,
+                    'paper_id' => $score->paper_id,
+                    'title' => $score->paper->title,
+                    'score' => $score->score,
+                    'total_score' => $score->paper->total_score,
+                    'start_time' => $score->start_time,
+                    'complete_time' => $score->complete_time,
+                ];
+            });
+            return response()->json([
+                'errors' => 0,
+                'scores' => $data,
+            ]);
+        }
+        $scores = $scores->paginate(30);
         return view('papers.scores', compact('scores'));
 	}
 
     public function startTest(Request $request, $id)
     {
+        Log::info($id);
         $paper = Paper::where('id', $id)->select('id', 'title', 'content', 'total_score', 'time_limit')->first();
         $user_id = Auth::id();
         if (!$paper) {
@@ -143,6 +162,7 @@ class PapersController extends Controller
         }
 
         return response()->json([
+            'errors' => 0,
             'sheet_id' => $sheet->id,
             'paper' => json_encode($paper),
         ]);
@@ -202,7 +222,7 @@ class PapersController extends Controller
         $answerSheet->save();
 
         return response()->json([
-            'error' => 0,
+            'errors' => 0,
             'score' => $score,
         ]);
 	}

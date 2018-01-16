@@ -31,10 +31,11 @@ Route::group([
     'prefix' => 'papers',
 ], function ($router) {
     $router->get('my', 'PapersController@myPapers');
-    $router->get('/{paper}/start', 'PapersController@startTest');
+    $router->get('/{id}/start', 'PapersController@startTest');
     $router->get('/{paper}/edit', 'PapersController@edit');
     $router->post('/{paper}/update', 'PapersController@update');
     $router->get('/{paper}/remove', 'PapersController@destroy');
     $router->post('/store', 'PapersController@store');
     $router->post('/submit', 'PapersController@submit');
+    $router->get('/myscores', 'PapersController@myScores');
 });

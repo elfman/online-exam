@@ -45,7 +45,12 @@
                     label="操作"
             >
                 <template slot-scope="scope">
-                    <router-link :to="{ name: 'editPaper', params: { id: scope.row.id } }"><el-button type="text">编辑</el-button></router-link>
+                    <router-link :to="{ name: 'paper', params: { id: scope.row.id } }">
+                        <el-button type="text">查看</el-button>
+                    </router-link>
+                    <router-link :to="{ name: 'editPaper', params: { id: scope.row.id } }">
+                        <el-button type="text">编辑</el-button>
+                    </router-link>
                     <el-button type="text" @click="removePaper(scope)">删除</el-button>
                 </template>
             </el-table-column>
@@ -78,9 +83,6 @@
                         })
                     }
                 });
-            },
-            editPaper(id) {
-                this.$router.push({ name: 'editPaper', params: { id: id } });
             },
             removePaper(scope) {
                 console.log(scope);
