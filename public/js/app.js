@@ -16862,7 +16862,7 @@ if (inBrowser && window.Vue) {
 "use strict";
 /* unused harmony export Store */
 /* unused harmony export install */
-/* unused harmony export mapState */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapState; });
 /* unused harmony export mapMutations */
 /* unused harmony export mapGetters */
 /* unused harmony export mapActions */
@@ -21171,8 +21171,8 @@ var routes = [{
   name: 'paper',
   component: __WEBPACK_IMPORTED_MODULE_2__components_pages_Test_vue___default.a
 }, {
-  path: '/scores',
-  name: 'scores',
+  path: '/myscores',
+  name: 'myscores',
   component: __WEBPACK_IMPORTED_MODULE_4__components_pages_Scores_vue___default.a
 }];
 
@@ -21338,82 +21338,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            papers: null,
-            loading: false
-        };
-    },
+  data: function data() {
+    return {
+      papers: null,
+      loading: false
+    };
+  },
 
-    methods: {
-        loadPapers: function loadPapers() {
-            var _this = this;
+  methods: {
+    loadPapers: function loadPapers() {
+      var _this = this;
 
-            this.loading = true;
-            this.$axios.get('/api/papers/my').then(function (res) {
-                _this.loading = false;
-                var data = res.data;
-                if (!data.errors) {
-                    _this.papers = data.papers.map(function (item, index) {
-                        var content = JSON.parse(item.content);
-                        return _this.$_.assign({}, item, {
-                            questions: content
-                        });
-                    });
-                }
+      this.loading = true;
+      this.$axios.get('/api/papers/my').then(function (res) {
+        _this.loading = false;
+        var data = res.data;
+        if (!data.errors) {
+          _this.papers = data.papers.map(function (item, index) {
+            var content = JSON.parse(item.content);
+            return _this.$_.assign({}, item, {
+              questions: content
             });
-        },
-        removePaper: function removePaper(scope) {
-            var _this2 = this;
-
-            console.log(scope);
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + scope.row.id + '/remove').then(function (res) {
-                var data = res.data;
-                if (!data.errors) {
-                    _this2.papers.splice(scope.$index, 1);
-                }
-            });
+          });
         }
+      });
     },
-    created: function created() {
-        this.loadPapers();
+    removePaper: function removePaper(scope) {
+      var _this2 = this;
+
+      console.log(scope);
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + scope.row.id + '/remove').then(function (res) {
+        var data = res.data;
+        if (!data.errors) {
+          _this2.papers.splice(scope.$index, 1);
+        }
+      });
     }
+  },
+  created: function created() {
+    this.loadPapers();
+  }
 });
 
 /***/ }),
@@ -21451,7 +21419,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.right[data-v-d25756a6] {\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.logo[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 150px;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.right[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  margin-left: auto;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  padding-right: 10px;\n}\n.user-info[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.user-info img[data-v-d25756a6] {\n    width: 36px;\n    height: 36px;\n    border-radius: 50%;\n    margin-right: 8px;\n}\n", ""]);
 
 // exports
 
@@ -21462,6 +21430,11 @@ exports.push([module.i, "\n.right[data-v-d25756a6] {\n  float: right;\n}\n", ""]
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(53);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
 //
 //
 //
@@ -21485,18 +21458,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        token: String,
-        avatar: String,
-        username: String
-        //            activeIndex: { type: String, default: 'paper' },
-    },
-    data: function data() {
-        return {
-            activeIndex: 'paper'
-        };
+  data: function data() {
+    var index = void 0;
+    switch (this.$route.name) {
+      case 'mypapers':
+        index = 'mypapers';
+        break;
+      case 'myscores':
+        index = 'myscores';
+        break;
+      default:
+        index = null;
+        break;
     }
+    return {
+      defaultIndex: index
+    };
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapState */])({
+    token: function token(state) {
+      return state.user.token;
+    },
+    username: function username(state) {
+      return state.user.name;
+    },
+    avatar: function avatar(state) {
+      return state.user.avatar;
+    }
+  }))
 });
 
 /***/ }),
@@ -21508,41 +21501,65 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "el-menu",
-    {
-      staticClass: "navbar-inner",
-      attrs: { "default-active": _vm.activeIndex, mode: "horizontal" }
-    },
+    "div",
+    { staticClass: "container" },
     [
-      _c("el-menu-item", { staticClass: "logo", attrs: { index: "logo" } }, [
-        _c("div", [_vm._v("\n            Test Paper\n        ")])
-      ]),
+      _c("div", { staticClass: "logo" }, [_vm._v("\n    Test Paper\n  ")]),
       _vm._v(" "),
-      _c("el-menu-item", { attrs: { index: "paper" } }, [_vm._v("我的试卷")]),
+      _c(
+        "el-menu",
+        {
+          staticClass: "navbar-inner",
+          attrs: {
+            "default-active": _vm.defaultIndex,
+            mode: "horizontal",
+            router: true
+          }
+        },
+        [
+          _c(
+            "el-menu-item",
+            { attrs: { index: "mypapers", route: "mypapers" } },
+            [_vm._v("我的试卷")]
+          ),
+          _vm._v(" "),
+          _c(
+            "el-menu-item",
+            { attrs: { index: "myscores", route: "myscores" } },
+            [_vm._v("我的成绩")]
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
-      _c("el-menu-item", { attrs: { index: "score" } }, [_vm._v("我的成绩")]),
-      _vm._v(" "),
-      _c("el-menu-item", { staticClass: "right", attrs: { index: "3" } }, [
-        _vm.token
-          ? _c("div", { staticClass: "user-info" }, [
-              _c("img", { attrs: { src: _vm.avatar, alt: "" } }),
-              _vm._v(" "),
-              _c("span", [_vm._v(_vm._s(_vm.username))])
-            ])
-          : _c(
-              "div",
-              [
-                _c("router-link", { attrs: { to: "/login" } }, [
-                  _vm._v("登录")
-                ]),
-                _vm._v(" "),
-                _c("router-link", { attrs: { to: "/register" } }, [
-                  _vm._v("注册")
+      _c(
+        "div",
+        { staticClass: "right" },
+        [
+          [
+            _vm.token
+              ? _c("div", { staticClass: "user-info" }, [
+                  _c("img", { attrs: { src: _vm.avatar, alt: "" } }),
+                  _vm._v(" "),
+                  _c("span", [_vm._v(_vm._s(_vm.username))])
                 ])
-              ],
-              1
-            )
-      ])
+              : _c(
+                  "div",
+                  [
+                    _c("router-link", { attrs: { to: "/login" } }, [
+                      _vm._v("登录")
+                    ]),
+                    _vm._v(" "),
+                    _c("router-link", { attrs: { to: "/register" } }, [
+                      _vm._v("注册")
+                    ])
+                  ],
+                  1
+                )
+          ]
+        ],
+        2
+      )
     ],
     1
   )
@@ -21593,13 +21610,9 @@ var render = function() {
           attrs: { data: _vm.papers }
         },
         [
-          _c("el-table-column", {
-            attrs: { type: "index", label: "#", width: "80" }
-          }),
+          _c("el-table-column", { attrs: { type: "index", label: "#" } }),
           _vm._v(" "),
-          _c("el-table-column", {
-            attrs: { prop: "title", label: "标题", width: "550" }
-          }),
+          _c("el-table-column", { attrs: { prop: "title", label: "标题" } }),
           _vm._v(" "),
           _c("el-table-column", {
             attrs: { prop: "questions.length", label: "总题数", width: "100" }
@@ -21626,7 +21639,7 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "operations", label: "操作" },
+            attrs: { prop: "operations", label: "操作", width: "150" },
             scopedSlots: _vm._u([
               {
                 key: "default",
@@ -21826,7 +21839,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-79f6bdf7] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.el-header[data-v-79f6bdf7] {\n  padding: 0 10px;\n}\n.login[data-v-79f6bdf7] {\n  margin-top: 60px;\n  width: 300px;\n  padding: 10px;\n  border-radius: 5px;\n  -webkit-box-shadow: 0 0 10px #cccccc;\n          box-shadow: 0 0 10px #cccccc;\n}\n.form[data-v-79f6bdf7] {\n  margin-top: 5px;\n  margin-right: 18px;\n}\n.remember[data-v-79f6bdf7], .service[data-v-79f6bdf7] {\n  margin: -18px 0 0;\n}\n.operations[data-v-79f6bdf7] {\n  margin-left: 65px;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-79f6bdf7] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.el-header[data-v-79f6bdf7] {\n  padding: 0 10px;\n}\n.login[data-v-79f6bdf7] {\n  margin-top: 60px;\n  padding: 10px 20px;\n  width: 300px;\n  border-radius: 5px;\n  -webkit-box-shadow: 0 0 10px #cccccc;\n          box-shadow: 0 0 10px #cccccc;\n}\n.form[data-v-79f6bdf7] {\n  margin-top: 5px;\n  margin-right: 18px;\n}\n.remember[data-v-79f6bdf7], .service[data-v-79f6bdf7] {\n  margin: -18px 0 0;\n}\n.operations[data-v-79f6bdf7] {\n  margin-left: 65px;\n}\n", ""]);
 
 // exports
 
@@ -21919,15 +21932,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             name: [{ required: true, message: '请输入用户名', trigger: 'blur' }, { min: 3, message: '用户名至少3个字符', trigger: 'blur' }],
             password: [{ required: true, message: '请输入密码', trigger: 'blur' }, { min: 6, message: '密码至少6个字符', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
             passwordConfirm: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { validator: validatePass2, trigger: 'blur' }]
-            //                service: [
-            //                    { type: 'boolean', required: true, message: '必须同意服务条款才能注册', trigger: 'change' },
-            //                ],
-
         };
         var loginRules = {
             email: registerRules.email,
             password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
         };
+
+        var defaultTab = this.$route.path.endsWith('login') ? 'login' : 'register';
+        console.log(defaultTab);
 
         return {
             loginRules: loginRules,
@@ -21944,7 +21956,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 passwordConfirm: '',
                 service: false
             },
-            tab: 'login'
+            currentTab: this.$route.path.endsWith('login') ? 'login' : 'register'
         };
     },
 
@@ -21985,15 +21997,7 @@ var render = function() {
       [
         _c(
           "el-tabs",
-          {
-            model: {
-              value: _vm.tab,
-              callback: function($$v) {
-                _vm.tab = $$v
-              },
-              expression: "tab"
-            }
-          },
+          { attrs: { value: _vm.currentTab } },
           [
             _c(
               "el-tab-pane",
@@ -82055,7 +82059,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var title = '成绩';
       var content = '\u60A8\u7684\u5206\u6570\u4E3A' + score + '\u5206';
       var onConfirm = function onConfirm() {
-        _this3.$router.replace({ name: 'scores' });
+        _this3.$router.replace({ name: 'myscores' });
       };
       this.showDialog(title, content, onConfirm);
     },
@@ -82496,20 +82500,22 @@ var render = function() {
     [
       _c("el-table-column", { attrs: { type: "index", label: "#" } }),
       _vm._v(" "),
-      _c("el-table-column", {
-        attrs: { prop: "title", label: "标题", width: "400" }
-      }),
-      _vm._v(" "),
-      _c("el-table-column", { attrs: { prop: "score", label: "分数" } }),
-      _vm._v(" "),
-      _c("el-table-column", { attrs: { prop: "total_score", label: "总分" } }),
+      _c("el-table-column", { attrs: { prop: "title", label: "标题" } }),
       _vm._v(" "),
       _c("el-table-column", {
-        attrs: { prop: "start_time", label: "开始时间" }
+        attrs: { prop: "score", label: "分数", width: "80" }
       }),
       _vm._v(" "),
       _c("el-table-column", {
-        attrs: { label: "用时" },
+        attrs: { prop: "total_score", label: "总分", width: "80" }
+      }),
+      _vm._v(" "),
+      _c("el-table-column", {
+        attrs: { prop: "start_time", label: "开始时间", width: "180" }
+      }),
+      _vm._v(" "),
+      _c("el-table-column", {
+        attrs: { label: "用时", width: "120" },
         scopedSlots: _vm._u([
           {
             key: "default",

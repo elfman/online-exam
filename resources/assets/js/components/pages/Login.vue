@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="login">
-            <el-tabs v-model="tab">
+            <el-tabs :value="currentTab">
                 <el-tab-pane label="登录" name="login">
                     <el-form label-width="65px" class="form" ref="login" :model="login" :rules="loginRules">
                         <el-form-item label="邮箱" prop="email">
@@ -87,10 +87,6 @@
                     { required: true, message: '请再次输入密码', trigger: 'blur' },
                     { validator: validatePass2, trigger: 'blur' },
                 ],
-//                service: [
-//                    { type: 'boolean', required: true, message: '必须同意服务条款才能注册', trigger: 'change' },
-//                ],
-
             };
             let loginRules = {
                 email: registerRules.email,
@@ -98,6 +94,9 @@
                     { required: true, message: '请输入密码', trigger: 'blur' },
                 ]
             };
+
+            const defaultTab = this.$route.path.endsWith('login') ? 'login' : 'register';
+            console.log(defaultTab);
 
             return {
                 loginRules,
@@ -114,7 +113,7 @@
                     passwordConfirm: '',
                     service: false,
                 },
-                tab: 'login',
+                currentTab: this.$route.path.endsWith('login') ? 'login' : 'register',
             };
         },
         methods: {
@@ -153,8 +152,8 @@
     }
     .login {
         margin-top: 60px;
+        padding: 10px 20px;
         width: 300px;
-        padding: 10px;
         border-radius: 5px;
         box-shadow: 0 0 10px #cccccc;
     }

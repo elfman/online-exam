@@ -1,11 +1,11 @@
 <template>
   <el-table v-loading="loading" :data="data">
     <el-table-column type="index" label="#"></el-table-column>
-    <el-table-column prop="title" label="标题" width="400"></el-table-column>
-    <el-table-column prop="score" label="分数"></el-table-column>
-    <el-table-column prop="total_score" label="总分"></el-table-column>
-    <el-table-column prop="start_time" label="开始时间"></el-table-column>
-    <el-table-column label="用时">
+    <el-table-column prop="title" label="标题"></el-table-column>
+    <el-table-column prop="score" label="分数" width="80"></el-table-column>
+    <el-table-column prop="total_score" label="总分" width="80"></el-table-column>
+    <el-table-column prop="start_time" label="开始时间" width="180"></el-table-column>
+    <el-table-column label="用时" width="120">
       <template slot-scope="scope">
         <span v-if="scope.row.spend_time">{{scope.row.spend_time}}</span>
         <span v-else>

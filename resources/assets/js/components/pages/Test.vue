@@ -154,7 +154,7 @@
         let title = '成绩';
         let content = `您的分数为${score}分`;
         let onConfirm = () => {
-          this.$router.replace({ name: 'scores' });
+          this.$router.replace({ name: 'myscores' });
         };
         this.showDialog(title, content, onConfirm);
       },

@@ -35,8 +35,8 @@ const routes = [
     name: 'paper',
     component: Test,
   }, {
-    path: '/scores',
-    name: 'scores',
+    path: '/myscores',
+    name: 'myscores',
     component: Scores,
   }
 ];
