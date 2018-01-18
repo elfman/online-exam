@@ -6,6 +6,10 @@ function route_class()
 }
 
 function computeScore($answers, $paper) {
+    if ($answers === null) {
+        return 0;
+    }
+
     $paperAnswers = json_decode($paper->answers);
     $content = json_decode($paper->content);
     if (count($answers) != count($paperAnswers)) {

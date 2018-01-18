@@ -36,6 +36,8 @@ Route::group([
     $router->post('/{paper}/update', 'PapersController@update');
     $router->get('/{paper}/remove', 'PapersController@destroy');
     $router->post('/store', 'PapersController@store');
-    $router->post('/submit', 'PapersController@submit');
+    $router->post('/submit/{score}', 'PapersController@submit');
     $router->get('/myscores', 'PapersController@myScores');
+    $router->post('/autoSave', 'PapersController@autoSave');
+    $router->get('/{paper}/check', 'PapersController@checkTestStatus');
 });

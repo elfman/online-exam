@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Score;
 use App\Models\Paper;
+use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaperRequest;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 use Log;
+use Cache;
 
 class PapersController extends Controller
 {
+    protected $answer_cache_prefix = 'answer_';
+
     public function __construct()
     {
         if (isApiRequest()) {
@@ -134,9 +139,49 @@ class PapersController extends Controller
         return view('papers.scores', compact('scores'));
 	}
 
+    public function checkTestStatus(Paper $paper)
+    {
+        $user_id = Auth::id();
+        $cacheData = Cache::get($this->getAnswerCacheKey($paper->id, $user_id));
+        // 如果有缓存，且还有考试时间
+        if ($cacheData && $cacheData['deadline'] > new DateTime()) {
+            return response()->json([
+                'errors' => 1,
+                'score_id' => $cacheData['score_id'],
+                'paper' => json_encode($paper),
+                'answers' => $cacheData['answers'],
+                'deadline' => $cacheData['deadline']->format('c'),
+            ]);
+        }
+
+        $score = Score::where('user_id', $user_id)
+            ->where('paper_id', $paper->id)
+            ->first();
+
+        if ($score) {
+            if ($score->score === null) {
+                return response()->json([
+                    'errors' => 2,
+                    'score_id' => $score->id,
+                    'paper' => json_encode($paper),
+                    'answers' => $score->answers,
+                    'deadline' => $this->getScoreDeadline($score->start_time, $paper->time_limit),
+                ]);
+            } else {
+                return response()->json([
+                    'errors' => 3,
+                    'score' => $score->score,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'errors' => 0,
+        ]);
+	}
+
     public function startTest(Request $request, $id)
     {
-        Log::info($id);
         $paper = Paper::where('id', $id)->select('id', 'title', 'content', 'total_score', 'time_limit')->first();
         $user_id = Auth::id();
         if (!$paper) {
@@ -144,86 +189,166 @@ class PapersController extends Controller
                 'error' => 'paper id not exist',
             ]);
         }
-        $sheet = Score::where('user_id', $user_id)
+
+        $cacheKey = $this->getAnswerCacheKey($id, $user_id);
+//
+//        $cacheData = Cache::get($cacheKey);
+//
+//        if ($cacheData) {
+//            if ($cacheData['deadline'] > new DateTime()) {
+//                return response()->json([
+//                    'errors' => 0,
+//                    'continue' => true,
+//                    'score_id' => $cacheData['score_id'],
+//                    'paper' => json_encode($paper),
+//                    'answers' => $cacheData['answers'],
+//                    'deadline' => $cacheData['deadline']->format('c'),
+//                ]);
+//            } else {
+//                return response()->json([
+//                    'errors' => 'This test is over',
+//                ]);
+//            }
+//        }
+
+        $score = Score::where('user_id', $user_id)
             ->where('paper_id', $id)
             ->first();
-        if ($sheet && !$request->query('force')) {
+
+        if ($score && !$request->query('force')) {
             return response()->json([
-                'error' => 'User has complete this test',
-                'id' => $sheet->id,
+                'errors' => 1,
+                'msg' => 'User has complete this test',
+                'id' => $score->id,
             ]);
         }
-        if (!$sheet) {
-            $sheet = Score::create([
+        if (!$score) {
+            $score = Score::create([
                 'user_id' => $user_id,
                 'paper_id' => $id,
                 'start_time' => now(),
             ]);
+        } else {
+            $score->start_time = now();
+            $score->score = null;
+            $score->save();
         }
+
+        $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+        $cacheData = [
+            'score_id' => $score->id,
+            'deadline' => $deadline,
+            'answers' => null,
+        ];
+
+        Cache::put($cacheKey, $cacheData, $deadline);
 
         return response()->json([
             'errors' => 0,
-            'sheet_id' => $sheet->id,
+            'score_id' => $score->id,
             'paper' => json_encode($paper),
+            'deadline' => $deadline->format('c'),
         ]);
 	}
 
-    public function submit(Request $request)
+    public function getAnswerCacheKey($paper_id, $user_id)
     {
-        $sheetId = $request->input('sheet_id');
-        $answerSheet = Score::find($sheetId);
-        if (!$answerSheet) {
+        return $this->answer_cache_prefix . $user_id . '_' . $paper_id;
+	}
+
+    public function getScoreDeadline($startTime, $timeLimit)
+    {
+        return (new DateTime($startTime))->add(new \DateInterval('PT' . $timeLimit . 'M'));
+	}
+
+    public function autoSave(Request $request)
+    {
+        $paper_id = $request->get('paper_id');
+        $answers = $request->get('answers');
+        $user_id = Auth::id();
+
+        $cacheKey = $this->getAnswerCacheKey($paper_id, $user_id);
+
+        $score = Cache::get($cacheKey);
+
+        if (!$score) {
             return response()->json([
-                'error' => 'sheet id not exist',
+                'errors' => 'This test is not exist',
             ]);
         }
 
-        $paper = Paper::find($answerSheet->paper_id);
-        if (!$paper) {
+        if ($score['deadline'] < new DateTime()) {
             return response()->json([
-                'error' => 'paper id not exist',
+                'errors' => 'this test is over',
             ]);
         }
 
-        $answers = $request->input('answers');
-        $score = computeScore($answers, $paper);
-        if ($score < 0) {
-            return response()->json([
-                'error' => 'invalid answer',
-            ]);
-        }
-//        $paperAnswers = json_decode($paper->answers);
-//        if (count($answers) != count($paperAnswers)) {
-//            return response()->json([
-//                'error' => 'answers not enough',
-//            ]);
-//        }
-//        $content = json_decode($paper->content);
-//        $score = 0;
-//        for ($index = 0; $index < count($paperAnswers); $index++) {
-//            $rightAnswer = $paperAnswers[$index];
-//            $question = $content[$index];
-//            $answer = $answers[$index];
-//            if ($question->type === 'single') {
-//                if ($rightAnswer === $answer) {
-//                    $score += $question->score;
-//                }
-//            } else if ($question->type === 'multi') {
-//                if (count($answer) === count($rightAnswer) &&
-//                    count(array_diff($rightAnswer, $answer)) === 0) {
-//                    $score += $question->score;
-//                }
-//            }
-//        }
+        $score['answers'] = $answers;
 
-        $answerSheet->score = $score;
-        $answerSheet->answers = json_encode($answers);
-        $answerSheet->complete_time = now();
-        $answerSheet->save();
+        Cache::put($cacheKey, $score, $score['deadline']);
 
         return response()->json([
+            'errors' => 0
+        ]);
+	}
+
+    public function submit(Request $request, Score $score)
+    {
+        $this->authorize('update', $score);
+
+        $paper = Paper::find($score->paper_id);
+        if (!$paper) {
+            return response()->json([
+                'errors' => 1,
+                'msg' => 'Paper not exist',
+            ]);
+        }
+
+        $isOvertime = false;
+        $totalScore = null;
+        $answers = null;
+
+        $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+        if ($deadline->add(new \DateInterval('PT20S')) < new DateTime()) { //考虑延迟，限时可推迟20秒
+            $isOvertime = true;
+            if ($score->score === null) {
+                // 如提交超时，以缓存中的答案为准
+                $answers = (Cache::get($this->getAnswerCacheKey($paper->id, Auth::id())))['answers'];
+            } else {
+                return response()->json([
+                    'errors' => 1,
+                    'score' => $score->score,
+                ]);
+            }
+        }
+
+        if (!$isOvertime) {
+            $answers = $request->input('answers');
+        }
+        $totalScore = computeScore($answers, $paper);
+        if ($totalScore < 0) {
+            return response()->json([
+                'errors' => 'invalid answer',
+            ]);
+        }
+
+        $score->score = $totalScore;
+        $score->answers = json_encode($answers);
+        $score->complete_time = now();
+        $score->save();
+
+        Cache::forget($this->getAnswerCacheKey($paper->id, Auth::id()));
+
+        if ($isOvertime) {
+            return response()->json([
+                'errors' => 2,
+                'score' => $totalScore,
+//                'msg' => '你的提交已超时，以服务器上最后保存的答案做评分，你的分数为' . $totalScore . '分',
+            ]);
+        }
+        return response()->json([
             'errors' => 0,
-            'score' => $score,
+            'score' => $totalScore,
         ]);
 	}
 }

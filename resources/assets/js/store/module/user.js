@@ -26,7 +26,7 @@ const actions = {
           if (!redirect) {
             redirect = '/mypapers';
           }
-          global.app.$router.replace(redirect);
+          app.$router.replace(redirect);
         }
       })
     });
@@ -44,7 +44,7 @@ const actions = {
           if (!redirect) {
             redirect = '/mypapers';
           }
-          global.app.$router.replace(redirect);
+          app.$router.replace(redirect);
         }
       })
     })

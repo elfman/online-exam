@@ -3,8 +3,8 @@
     <div class="logo">
       线上考试系统
     </div>
-      <el-menu-item index="mypapers" route="mypapers">我的试卷</el-menu-item>
-      <el-menu-item index="myscores" route="myscores">我的成绩</el-menu-item>
+      <el-menu-item index="mypapers" :route="{ name: 'mypapers' }">我的试卷</el-menu-item>
+      <el-menu-item index="myscores" :route="{ name: 'myscores' }">我的成绩</el-menu-item>
     <div class="right">
       <template>
         <el-dropdown v-if="token" size="small" @command="handleCommand">
@@ -33,10 +33,10 @@
       let index;
       switch (this.$route.name) {
         case 'mypapers':
-          index = 'mypapers';
+          index = '/mypapers';
           break;
         case 'myscores':
-          index = 'myscores';
+          index = '/myscores';
           break;
         default:
           index = null;
