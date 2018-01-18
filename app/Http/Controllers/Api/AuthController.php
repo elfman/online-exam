@@ -47,7 +47,14 @@ class AuthController extends Controller {
 
     public function me()
     {
-        return response()->json($this->guard()->user());
+        $user = $this->guard()->user();
+        return response()->json([
+            'errors' => 0,
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $user->avatar,
+        ]);
     }
 
     public function logout()

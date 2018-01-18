@@ -85,6 +85,7 @@
         countDownHandler: null,
         checkingStatus: false,
         testStatus: null,
+        lastScore: null,
       };
     },
     methods: {
@@ -97,6 +98,8 @@
           this.testStatus = data.errors;
           if (data.errors === 1 || data.errors === 2) {
             this.setupPaper(data);
+          } else if (data.errors === 3) {
+            this.lastScore = data.score;
           }
         });
       },

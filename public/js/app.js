@@ -18030,6 +18030,7 @@ module.exports = Cancel;
   LOGOUT: 'LOGOUT',
   LOAD_USER_FROM_LOCAL: 'LOAD_USER_FROM_LOCAL',
   SET_USER_INFO: 'SET_USER_INFO',
+  SET_AUTH_INFO: 'SET_AUTH_INFO',
   CLEAR_USER_INFO: 'CLEAR_USER_INFO'
 });
 
@@ -36974,10 +36975,11 @@ Object.defineProperty(__WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype, '$_
 __WEBPACK_IMPORTED_MODULE_7_axios___default.a.interceptors.response.use(function (res) {
   if (res.status === 401) {
     localStorage.removeItem('token');
-    router.push({ path: '/login' });
+    app.$router.push({ name: 'login', query: { redirect: app.$route.fullPath } });
   }
   return res;
 }, function (error) {
+  console.log(error);
   return Promise.reject(error);
 });
 
@@ -36999,24 +37001,41 @@ global.app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 
     if (localStorage.token) {
       __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-      __WEBPACK_IMPORTED_MODULE_7_axios___default.a.post('api/auth/refresh', { token: localStorage.token }).then(function (res) {
-        var data = res.data;
-        if (!data.errors) {
-          localStorage.setItem('token', data.token);
-          __WEBPACK_IMPORTED_MODULE_3__store_store__["a" /* default */].commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_USER_INFO, data);
-          __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
-        } else {
-          localStorage.removeItem('token');
-          router.push({ path: '/login' });
-        }
-      }).catch(function (error) {
-        if (error.response.status === 401) {
-          _this.$router.push({ path: 'login' });
-        }
-      });
+      if (isTokenExpires()) {
+        __WEBPACK_IMPORTED_MODULE_7_axios___default.a.post('api/auth/refresh', { token: localStorage.token }).then(function (res) {
+          var data = res.data;
+          if (!data.errors) {
+            app.$store.commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
+            app.$store.commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
+            __WEBPACK_IMPORTED_MODULE_7_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
+          } else {
+            localStorage.removeItem('token');
+            router.push({ path: '/login' });
+          }
+        }).catch(function (error) {
+          if (error.response.status === 401) {
+            _this.$router.push({ path: 'login' });
+          }
+        });
+      } else {
+        __WEBPACK_IMPORTED_MODULE_7_axios___default.a.get('/api/auth/me').then(function (res) {
+          var data = res.data;
+          if (!data.errors) {
+            app.$store.commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_AUTH_INFO, {
+              token: localStorage.getItem('token'),
+              expires: localStorage.getItem('expires')
+            });
+            app.$store.commit(__WEBPACK_IMPORTED_MODULE_9__store_mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          }
+        });
+      }
     }
   }
 });
+
+function isTokenExpires() {
+  return localStorage.getItem('expires') - Date.now() < 24 * 60 * 60 * 1000;
+}
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(18)))
 
 /***/ }),
@@ -37314,6 +37333,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var state = {
   token: null,
+  expires: null,
+  id: null,
   name: null,
   email: null,
   avatar: null
@@ -37333,9 +37354,9 @@ var actions = {
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/login', data).then(function (response) {
         var data = response.data;
         if (!data.errors) {
-          window.localStorage.setItem('token', data.token);
           __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
           if (!redirect) {
             redirect = '/mypapers';
@@ -37352,9 +37373,9 @@ var actions = {
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/register', data).then(function (response) {
         var data = response.data;
         if (!data.errors) {
-          window.localStorage.setItem('token', data.token);
           __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data);
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
+          commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
           if (!redirect) {
             redirect = '/mypapers';
@@ -37379,16 +37400,17 @@ var actions = {
   }
 };
 
-var mutations = (_mutations = {}, _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, function (state, data) {
+var mutations = (_mutations = {}, _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, function (state, data) {
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('expires', Date.now() + data.expires_in * 1000);
   state.token = data.token;
   state.expires = Date.now() + data.expires_in * 1000;
-  state.email = data.user.email;
-  state.avatar = data.user.avatar;
-  state.name = data.user.name;
-  state.id = data.user.id;
+}), _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, function (state, data) {
+  state.email = data.email;
+  state.avatar = data.avatar;
+  state.name = data.name;
+  state.id = data.id;
 }), _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_USER_INFO, function (state) {
-  state.token = null;
-  state.expires = null;
   state.email = null;
   state.avatar = null;
   state.name = null;
@@ -39678,7 +39700,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       leftTime: null,
       countDownHandler: null,
       checkingStatus: false,
-      testStatus: null
+      testStatus: null,
+      lastScore: null
     };
   },
 
@@ -39694,6 +39717,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.testStatus = data.errors;
         if (data.errors === 1 || data.errors === 2) {
           _this.setupPaper(data);
+        } else if (data.errors === 3) {
+          _this.lastScore = data.score;
         }
       });
     },

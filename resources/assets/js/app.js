@@ -34,10 +34,11 @@ Object.defineProperty(Vue.prototype, '$_', {value: lodash});
 axios.interceptors.response.use(res => {
   if (res.status === 401) {
     localStorage.removeItem('token');
-    router.push({path: '/login'});
+    app.$router.push({ name: 'login', query: { redirect: app.$route.fullPath } });
   }
   return res;
 }, error => {
+  console.log(error);
   return Promise.reject(error);
 });
 
@@ -57,22 +58,39 @@ global.app = new Vue({
   beforeCreate: function () {
     if (localStorage.token) {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
-      axios.post('api/auth/refresh', {token: localStorage.token}).then(res => {
-        let data = res.data;
-        if (!data.errors) {
-          localStorage.setItem('token', data.token);
-          store.commit(types.SET_USER_INFO, data);
-          axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
-        } else {
-          localStorage.removeItem('token');
-          router.push({path: '/login'});
-        }
+      if (isTokenExpires()) {
+        axios.post('api/auth/refresh', {token: localStorage.token}).then(res => {
+          let data = res.data;
+          if (!data.errors) {
+            app.$store.commit(types.SET_AUTH_INFO, data);
+            app.$store.commit(types.SET_USER_INFO, data.user);
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
+          } else {
+            localStorage.removeItem('token');
+            router.push({path: '/login'});
+          }
 
-      }).catch(error => {
-        if (error.response.status === 401) {
-          this.$router.push({path: 'login'});
-        }
-      });
+        }).catch(error => {
+          if (error.response.status === 401) {
+            this.$router.push({path: 'login'});
+          }
+        });
+      } else {
+        axios.get('/api/auth/me').then(res => {
+          const data = res.data;
+          if (!data.errors) {
+            app.$store.commit(types.SET_AUTH_INFO, {
+              token: localStorage.getItem('token'),
+              expires: localStorage.getItem('expires')
+            });
+            app.$store.commit(types.SET_USER_INFO, data);
+          }
+        });
+      }
     }
   }
 });
+
+function isTokenExpires() {
+  return localStorage.getItem('expires') - Date.now() < 24 * 60 * 60 * 1000
+}

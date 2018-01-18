@@ -315,6 +315,7 @@ class PapersController extends Controller
                 // 如提交超时，以缓存中的答案为准
                 $answers = (Cache::get($this->getAnswerCacheKey($paper->id, Auth::id())))['answers'];
             } else {
+                // 已有分数，不再重新评分
                 return response()->json([
                     'errors' => 1,
                     'score' => $score->score,
@@ -343,7 +344,6 @@ class PapersController extends Controller
             return response()->json([
                 'errors' => 2,
                 'score' => $totalScore,
-//                'msg' => '你的提交已超时，以服务器上最后保存的答案做评分，你的分数为' . $totalScore . '分',
             ]);
         }
         return response()->json([
