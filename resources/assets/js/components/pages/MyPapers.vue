@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link to="createPaper">
+    <router-link :to="{ name: 'createPaper' }">
       <el-button type="primary">添加新试卷</el-button>
     </router-link>
     <el-table :data="papers" v-loading="loading">
@@ -9,6 +9,15 @@
       <el-table-column prop="questions.length" label="总题数" width="100"></el-table-column>
       <el-table-column prop="total_score" label="总分" width="100"></el-table-column>
       <el-table-column prop="time_limit" label="限时" width="100"></el-table-column>
+      <el-table-column label="密码" width="100">
+        <template slot-scope="scope">
+          <el-popover trigger="click" placement="top" v-if="scope.row.password">
+            {{ scope.row.password }}
+            <el-button type="text" slot="reference">查看</el-button>
+          </el-popover>
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="participation_count" label="已参加人数" width="100"></el-table-column>
       <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
       <el-table-column prop="operations" label="操作" width="150">

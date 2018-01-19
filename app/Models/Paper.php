@@ -8,7 +8,7 @@ class Paper extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers'];
+    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers', 'password'];
 
     public function creator()
     {

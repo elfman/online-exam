@@ -1,13 +1,18 @@
 <template>
   <div class="container" v-loading="loadingPaper">
     <div class="start-test" v-if="!paper">
+      <el-alert type="error" :title="errorMessage" v-if="errorMessage" @close="errorMessage = null"></el-alert>
       <div class="checking-status" v-if="checkingStatus"><h3>正在获取...</h3></div>
       <template v-else>
         <div class="has-score" v-if="testStatus === 3">
           <p>你已经参加过此次测试，你的分数是 <strong>{{ lastScore }}</strong> 分</p>
           <p>是否重新测试？</p>
         </div>
-        <el-button type="primary" @click="startTest" size="large" v-if="testStatus === 0 || testStatus === 3">开始测试</el-button>
+        <div class="need-password" v-if="testStatus === 4">
+          <p>该试卷需要密码才能访问</p>
+          <el-input size="small" style="width: 200px;" placeholder="请输入密码" v-model="password"></el-input>
+        </div>
+        <el-button type="primary" @click="startTest" size="large" v-if="testStatus === 0 || testStatus === 3 || testStatus === 4">开始测试</el-button>
       </template>
     </div>
     <el-form v-if="paper" class="paper" ref="form">
@@ -16,7 +21,7 @@
         <div class="subtitle">总分：{{ paper.total_score }} 限时：{{ paper.time_limit }}</div>
       </div>
       <div class="paper-content">
-        <div class="question" v-for="(item, index) in paper.content" :id="'question' + index" :key="item.id">
+        <div class="question" v-for="(item, index) in paper.questions" :id="'question' + index" :key="item.id">
           <div class="title">{{ index + 1 }}. {{ item.question }} &nbsp; ({{ item.score }}分)</div>
           <div class="options">
             <el-checkbox-group v-model="answers[index]" v-if="item.type === 'multi'">
@@ -86,6 +91,9 @@
         checkingStatus: false,
         testStatus: null,
         lastScore: null,
+        password: '',
+        passwordError: null,
+        errorMessage: null,
       };
     },
     methods: {
@@ -107,16 +115,28 @@
         if (this.loadingPaper) {
           return;
         }
+        if (this.testStatus === 4 && this.password === '') {
+          this.errorMessage = '请输入密码';
+          return;
+        }
         this.loadingPaper = true;
-        axios.get(`/api/papers/${this.$route.params.id}/start`, {
-          params: {
-            force: this.testStatus === 3,
-          }
+        axios.post(`/api/papers/${this.$route.params.id}/start`, {
+          force: this.testStatus === 3,
+          password: this.testStatus === 4 ? this.password : null,
         }).then((res) => {
           const data = res.data;
           this.loadingPaper = false;
           if (!data.errors) {
+            this.errorMessage = null;
             this.setupPaper(data);
+          } else {
+            if (data.errors === 1) {
+              this.errorMessage = '该测试不存在';
+            } else if (data.errors === 2) {
+              this.errorMessage = '你已完成该测试';
+            } else if (data.errors === 3) {
+              this.errorMessage = '密码错误';
+            }
           }
         });
       },
@@ -162,11 +182,6 @@
           });
         }
       },
-      parsePaper(json) {
-        let paper = JSON.parse(json);
-        paper.content = JSON.parse(paper.content);
-        return paper;
-      },
       initAnswers(content) {
         const answers = new Array(content.length);
         content.forEach(function (question, index) {
@@ -182,8 +197,9 @@
       },
       setupPaper(data) {
         this.scoreId = data.score_id;
-        this.paper = this.parsePaper(data.paper);
-        this.answers = data.answers ? data.answers : this.initAnswers(this.paper.content);
+        this.paper = data.paper;
+        this.paper.questions = JSON.parse(data.paper.content);
+        this.answers = data.answers ? data.answers : this.initAnswers(this.paper.questions);
         this.boxStatus = this.answers.map(item => this.isDone(item));
         this.deadline = new Date(data.deadline);
 
@@ -307,6 +323,13 @@
 
   .has-score {
     text-align: center;
+  }
+
+  .need-password {
+    margin-bottom: 18px;
+    p {
+      margin: 6px 0;
+    }
   }
 
   .start-test {

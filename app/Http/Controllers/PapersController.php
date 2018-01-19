@@ -34,7 +34,8 @@ class PapersController extends Controller
     public function myPapers()
     {
         $papers = Paper::where('creator_id', Auth::id())->select(
-            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'participation_count', 'created_at')->orderBy('created_at')->get();
+            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'password', 'participation_count', 'created_at')
+            ->orderBy('created_at')->get();
         return response()->json([
             'errors' => 0,
             'papers' => $papers
@@ -63,6 +64,11 @@ class PapersController extends Controller
         $data['total_score'] = $total_score;
         $data['creator_id'] = Auth::id();
         $data['content'] = $data['questions'];
+
+        if ($request->get('need_password')) {
+            $data['password'] = $request->get('password');
+        }
+
 		$paper = Paper::create($data);
         return response()->json([
             'error' => 0,
@@ -93,6 +99,8 @@ class PapersController extends Controller
 		    $total_score += $question['score'];
         }
         $data['total_score'] = $total_score;
+
+        $data['password'] = $request->get('need_password') ? $request->get('password') : null;
 
 		$paper->update($data);
 
@@ -148,7 +156,7 @@ class PapersController extends Controller
             return response()->json([
                 'errors' => 1,
                 'score_id' => $cacheData['score_id'],
-                'paper' => json_encode($paper),
+                'paper' => $paper,
                 'answers' => $cacheData['answers'],
                 'deadline' => $cacheData['deadline']->format('c'),
             ]);
@@ -163,7 +171,7 @@ class PapersController extends Controller
                 return response()->json([
                     'errors' => 2,
                     'score_id' => $score->id,
-                    'paper' => json_encode($paper),
+                    'paper' => $paper,
                     'answers' => $score->answers,
                     'deadline' => $this->getScoreDeadline($score->start_time, $paper->time_limit),
                 ]);
@@ -176,56 +184,36 @@ class PapersController extends Controller
         }
 
         return response()->json([
-            'errors' => 0,
+            'errors' => $paper->password ? 4 : 0,
         ]);
 	}
 
-    public function startTest(Request $request, $id)
+    public function startTest(Request $request, Paper $paper)
     {
-        $paper = Paper::where('id', $id)->select('id', 'title', 'content', 'total_score', 'time_limit')->first();
         $user_id = Auth::id();
-        if (!$paper) {
-            return response()->json([
-                'error' => 'paper id not exist',
-            ]);
-        }
-
-        $cacheKey = $this->getAnswerCacheKey($id, $user_id);
-//
-//        $cacheData = Cache::get($cacheKey);
-//
-//        if ($cacheData) {
-//            if ($cacheData['deadline'] > new DateTime()) {
-//                return response()->json([
-//                    'errors' => 0,
-//                    'continue' => true,
-//                    'score_id' => $cacheData['score_id'],
-//                    'paper' => json_encode($paper),
-//                    'answers' => $cacheData['answers'],
-//                    'deadline' => $cacheData['deadline']->format('c'),
-//                ]);
-//            } else {
-//                return response()->json([
-//                    'errors' => 'This test is over',
-//                ]);
-//            }
-//        }
+        $cacheKey = $this->getAnswerCacheKey($paper->id, $user_id);
 
         $score = Score::where('user_id', $user_id)
-            ->where('paper_id', $id)
+            ->where('paper_id', $paper->id)
             ->first();
 
-        if ($score && !$request->query('force')) {
+        if ($score && !$request->get('force')) {
             return response()->json([
-                'errors' => 1,
+                'errors' => 2,
                 'msg' => 'User has complete this test',
                 'id' => $score->id,
             ]);
         }
         if (!$score) {
+            if ($paper->password && $paper->password !== $request->get('password')) {
+                return response()->json([
+                    'errors' => 3,
+                    'msg' => 'wrong password',
+                ]);
+            }
             $score = Score::create([
                 'user_id' => $user_id,
-                'paper_id' => $id,
+                'paper_id' => $paper->id,
                 'start_time' => now(),
             ]);
         } else {
@@ -243,10 +231,18 @@ class PapersController extends Controller
 
         Cache::put($cacheKey, $cacheData, $deadline);
 
+        $paperData = [
+            'id' => $paper->id,
+            'title' => $paper->title,
+            'content' => $paper->content,
+            'total_score' => $paper->total_score,
+            'time_limit' => $paper->time_limit,
+        ];
+
         return response()->json([
             'errors' => 0,
             'score_id' => $score->id,
-            'paper' => json_encode($paper),
+            'paper' => $paperData,
             'deadline' => $deadline->format('c'),
         ]);
 	}

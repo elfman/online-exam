@@ -31,7 +31,7 @@ Route::group([
     'prefix' => 'papers',
 ], function ($router) {
     $router->get('my', 'PapersController@myPapers');
-    $router->get('/{id}/start', 'PapersController@startTest');
+    $router->post('/{paper}/start', 'PapersController@startTest');
     $router->get('/{paper}/edit', 'PapersController@edit');
     $router->post('/{paper}/update', 'PapersController@update');
     $router->get('/{paper}/remove', 'PapersController@destroy');

@@ -38539,6 +38539,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -38598,7 +38607,7 @@ var render = function() {
     [
       _c(
         "router-link",
-        { attrs: { to: "createPaper" } },
+        { attrs: { to: { name: "createPaper" } } },
         [
           _c("el-button", { attrs: { type: "primary" } }, [
             _vm._v("添加新试卷")
@@ -38635,6 +38644,41 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: { prop: "time_limit", label: "限时", width: "100" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { label: "密码", width: "100" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    scope.row.password
+                      ? _c(
+                          "el-popover",
+                          { attrs: { trigger: "click", placement: "top" } },
+                          [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(scope.row.password) +
+                                "\n          "
+                            ),
+                            _c(
+                              "el-button",
+                              {
+                                attrs: { slot: "reference", type: "text" },
+                                slot: "reference"
+                              },
+                              [_vm._v("查看")]
+                            )
+                          ],
+                          1
+                        )
+                      : _c("span", [_vm._v("无")])
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
@@ -39599,7 +39643,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-59530218] {\n  width: 700px;\n  margin: 0 auto;\n}\n.has-score[data-v-59530218] {\n  text-align: center;\n}\n.start-test[data-v-59530218] {\n  text-align: center;\n}\n.paper[data-v-59530218] {\n  width: 100%;\n}\n.paper-header[data-v-59530218] {\n  text-align: center;\n  margin: 20px 0 14px;\n}\n.paper-header .title[data-v-59530218] {\n    font-size: 28px;\n}\n.paper-header .subtitle[data-v-59530218] {\n    font-size: 24px;\n    margin-top: 16px;\n}\n.question .title[data-v-59530218] {\n  font-size: 16px;\n  margin: 12px 0;\n}\n.submit[data-v-59530218] {\n  margin-top: 25px;\n  text-align: center;\n}\n.submit > *[data-v-59530218] {\n    width: 120px;\n    font-size: 18px;\n}\nlabel.el-radio[data-v-59530218], label.el-checkbox[data-v-59530218] {\n  display: block;\n  margin-left: 0 !important;\n  line-height: 16px;\n}\nlabel.el-radio[data-v-59530218]:not(:first-child), label.el-checkbox[data-v-59530218]:not(:first-child) {\n    margin-top: 10px;\n}\n.answer-status[data-v-59530218] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 260px;\n}\n.answer-status .left-time[data-v-59530218] {\n    float: right;\n}\n.answer-status .numbers[data-v-59530218] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.answer-status span[data-v-59530218] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.answer-status span.done[data-v-59530218] {\n      background-color: #409eff;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-59530218] {\n  width: 700px;\n  margin: 0 auto;\n}\n.has-score[data-v-59530218] {\n  text-align: center;\n}\n.need-password[data-v-59530218] {\n  margin-bottom: 18px;\n}\n.need-password p[data-v-59530218] {\n    margin: 6px 0;\n}\n.start-test[data-v-59530218] {\n  text-align: center;\n}\n.paper[data-v-59530218] {\n  width: 100%;\n}\n.paper-header[data-v-59530218] {\n  text-align: center;\n  margin: 20px 0 14px;\n}\n.paper-header .title[data-v-59530218] {\n    font-size: 28px;\n}\n.paper-header .subtitle[data-v-59530218] {\n    font-size: 24px;\n    margin-top: 16px;\n}\n.question .title[data-v-59530218] {\n  font-size: 16px;\n  margin: 12px 0;\n}\n.submit[data-v-59530218] {\n  margin-top: 25px;\n  text-align: center;\n}\n.submit > *[data-v-59530218] {\n    width: 120px;\n    font-size: 18px;\n}\nlabel.el-radio[data-v-59530218], label.el-checkbox[data-v-59530218] {\n  display: block;\n  margin-left: 0 !important;\n  line-height: 16px;\n}\nlabel.el-radio[data-v-59530218]:not(:first-child), label.el-checkbox[data-v-59530218]:not(:first-child) {\n    margin-top: 10px;\n}\n.answer-status[data-v-59530218] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 260px;\n}\n.answer-status .left-time[data-v-59530218] {\n    float: right;\n}\n.answer-status .numbers[data-v-59530218] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.answer-status span[data-v-59530218] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.answer-status span.done[data-v-59530218] {\n      background-color: #409eff;\n}\n", ""]);
 
 // exports
 
@@ -39614,6 +39658,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -39701,7 +39750,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       countDownHandler: null,
       checkingStatus: false,
       testStatus: null,
-      lastScore: null
+      lastScore: null,
+      password: '',
+      passwordError: null,
+      errorMessage: null
     };
   },
 
@@ -39728,16 +39780,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (this.loadingPaper) {
         return;
       }
+      if (this.testStatus === 4 && this.password === '') {
+        this.errorMessage = '请输入密码';
+        return;
+      }
       this.loadingPaper = true;
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + this.$route.params.id + '/start', {
-        params: {
-          force: this.testStatus === 3
-        }
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/papers/' + this.$route.params.id + '/start', {
+        force: this.testStatus === 3,
+        password: this.testStatus === 4 ? this.password : null
       }).then(function (res) {
         var data = res.data;
         _this2.loadingPaper = false;
         if (!data.errors) {
+          _this2.errorMessage = null;
           _this2.setupPaper(data);
+        } else {
+          if (data.errors === 1) {
+            _this2.errorMessage = '该测试不存在';
+          } else if (data.errors === 2) {
+            _this2.errorMessage = '你已完成该测试';
+          } else if (data.errors === 3) {
+            _this2.errorMessage = '密码错误';
+          }
         }
       });
     },
@@ -39787,11 +39851,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         });
       }
     },
-    parsePaper: function parsePaper(json) {
-      var paper = JSON.parse(json);
-      paper.content = JSON.parse(paper.content);
-      return paper;
-    },
     initAnswers: function initAnswers(content) {
       var answers = new Array(content.length);
       content.forEach(function (question, index) {
@@ -39809,8 +39868,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this5 = this;
 
       this.scoreId = data.score_id;
-      this.paper = this.parsePaper(data.paper);
-      this.answers = data.answers ? data.answers : this.initAnswers(this.paper.content);
+      this.paper = data.paper;
+      this.paper.questions = JSON.parse(data.paper.content);
+      this.answers = data.answers ? data.answers : this.initAnswers(this.paper.questions);
       this.boxStatus = this.answers.map(function (item) {
         return _this5.isDone(item);
       });
@@ -39985,6 +40045,17 @@ var render = function() {
             "div",
             { staticClass: "start-test" },
             [
+              _vm.errorMessage
+                ? _c("el-alert", {
+                    attrs: { type: "error", title: _vm.errorMessage },
+                    on: {
+                      close: function($event) {
+                        _vm.errorMessage = null
+                      }
+                    }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
               _vm.checkingStatus
                 ? _c("div", { staticClass: "checking-status" }, [
                     _c("h3", [_vm._v("正在获取...")])
@@ -40002,7 +40073,35 @@ var render = function() {
                         ])
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm.testStatus === 0 || _vm.testStatus === 3
+                    _vm.testStatus === 4
+                      ? _c(
+                          "div",
+                          { staticClass: "need-password" },
+                          [
+                            _c("p", [_vm._v("该试卷需要密码才能访问")]),
+                            _vm._v(" "),
+                            _c("el-input", {
+                              staticStyle: { width: "200px" },
+                              attrs: {
+                                size: "small",
+                                placeholder: "请输入密码"
+                              },
+                              model: {
+                                value: _vm.password,
+                                callback: function($$v) {
+                                  _vm.password = $$v
+                                },
+                                expression: "password"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.testStatus === 0 ||
+                    _vm.testStatus === 3 ||
+                    _vm.testStatus === 4
                       ? _c(
                           "el-button",
                           {
@@ -40038,7 +40137,7 @@ var render = function() {
             _c(
               "div",
               { staticClass: "paper-content" },
-              _vm._l(_vm.paper.content, function(item, index) {
+              _vm._l(_vm.paper.questions, function(item, index) {
                 return _c(
                   "div",
                   {
@@ -40314,162 +40413,184 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        var _this = this;
+  data: function data() {
+    var _this = this;
 
-        var validateTimeLimit = function validateTimeLimit(rule, value, callback) {
-            var reg = /^[0-9]*[1-9][0-9]*$/;
-            if (!reg.test(value)) {
-                callback(new Error('请输入一个大于0的整数'));
+    var validateTimeLimit = function validateTimeLimit(rule, value, callback) {
+      var reg = /^[0-9]*[1-9][0-9]*$/;
+      if (!reg.test(value)) {
+        callback(new Error('请输入一个大于0的整数'));
+      } else {
+        callback();
+      }
+    };
+    var validateQuestions = function validateQuestions(rule, value, callback) {
+      if (_this.paper.questions.length === 0) {
+        callback(new Error('请输入至少一个题目'));
+      } else {
+        callback();
+      }
+    };
+
+    var validatePassword = function validatePassword(rule, value, callback) {
+      if (_this.paper.needPassword) {
+        if (value && value.length > 0) {
+          callback();
+        } else {
+          callback(new Error('请输入密码'));
+        }
+      }
+    };
+    var rules = {
+      title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+      time_limit: [{ required: true, message: '请输入考试时长', trigger: 'blur' }, { validator: validateTimeLimit, trigger: 'blur' }],
+      password: [{ validator: validatePassword, trigger: 'blur' }],
+      questions: [{ validator: validateQuestions, trigger: 'submit' }]
+    };
+    return {
+      rules: rules,
+      paper: {
+        needPassword: false,
+        password: '',
+        title: '',
+        time_limit: 60,
+        questions: [],
+        answers: []
+      },
+      addingQuestion: false,
+      loading: false
+    };
+  },
+
+  methods: {
+    loadPaper: function loadPaper(id) {
+      var _this2 = this;
+
+      this.loading = true;
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + id + '/edit').then(function (res) {
+        _this2.loading = false;
+        var data = res.data;
+        if (!data.errors) {
+          var paper = data.paper;
+          paper.questions = JSON.parse(paper.content);
+          var answers = JSON.parse(paper.answers);
+          paper.questions.forEach(function (item, index) {
+            item.answer = answers[index];
+            item.title = item.question;
+          });
+          paper.needPassword = !!paper.password;
+          _this2.paper = paper;
+        }
+      });
+    },
+    addQuestion: function addQuestion() {
+      this.addingQuestion = true;
+    },
+    onQuestionCancel: function onQuestionCancel() {
+      this.addingQuestion = false;
+    },
+    onCreateQuestion: function onCreateQuestion(question) {
+      this.paper.questions.push(question);
+      this.addingQuestion = false;
+      this.$refs.form.validateField('questions');
+    },
+    onSaveQuestion: function onSaveQuestion(id, question) {
+      this.$set(this.paper.questions, id, question);
+    },
+    onRemoveQuestion: function onRemoveQuestion(id) {
+      this.paper.questions.splice(id, 1);
+    },
+    onQuestionUp: function onQuestionUp(id) {
+      if (id === 0) {
+        return;
+      }
+      var questions = this.paper.questions;
+      var temp = questions[id];
+      this.$set(questions, id, questions[id - 1]);
+      this.$set(questions, id - 1, temp);
+    },
+    onQuestionDown: function onQuestionDown(id) {
+      var questions = this.paper.questions;
+      if (id === questions.length - 1) {
+        return;
+      }
+      var temp = questions[id];
+      this.$set(questions, id, questions[id + 1]);
+      this.$set(questions, id + 1, temp);
+    },
+    save: function save() {
+      var _this3 = this;
+
+      var url = this.paper.id ? '/api/papers/' + this.paper.id + '/update' : '/api/papers/store';
+      var answers = [];
+      this.$refs.form.validate(function (valid) {
+        if (valid) {
+          var questions = _this3.paper.questions.map(function (item) {
+            answers.push(item.answer);
+            return {
+              question: item.title,
+              type: item.type,
+              score: item.score,
+              options: item.options
+            };
+          });
+          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(url, {
+            title: _this3.paper.title,
+            time_limit: _this3.paper.time_limit,
+            need_password: _this3.paper.needPassword,
+            password: _this3.paper.needPassword ? _this3.paper.password : undefined,
+            questions: questions,
+            answers: answers
+          }).then(function (response) {
+            if (!response.data.errors) {
+              _this3.$message({
+                message: _this3.paper.id ? '保存成功' : '创建成功',
+                type: 'success'
+              });
+              _this3.$router.replace({ name: 'mypapers' });
             } else {
-                callback();
+              _this3.$message({
+                message: _this3.paper.id ? '保存失败' : '创建失败',
+                type: 'error'
+              });
             }
-        };
-        var validateQuestions = function validateQuestions(rule, value, callback) {
-            if (_this.paper.questions.length === 0) {
-                callback('请输入至少一个题目');
-            } else {
-                callback();
-            }
-        };
-        var rules = {
-            title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-            time_limit: [{ validator: validateTimeLimit, trigger: 'blur' }],
-            questions: [{ validator: validateQuestions, trigger: 'submit' }]
-        };
-        return {
-            rules: rules,
-            paper: {
-                title: '',
-                time_limit: 60,
-                questions: [],
-                answers: []
-            },
-            addingQuestion: false,
-            loading: false
-        };
-    },
-
-    methods: {
-        loadPaper: function loadPaper(id) {
-            var _this2 = this;
-
-            this.loading = true;
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + id + '/edit').then(function (res) {
-                _this2.loading = false;
-                var data = res.data;
-                if (!data.errors) {
-                    var paper = data.paper;
-                    paper.questions = JSON.parse(paper.content);
-                    var answers = JSON.parse(paper.answers);
-                    paper.questions.forEach(function (item, index) {
-                        item.answer = answers[index];
-                        item.title = item.question;
-                    });
-                    _this2.paper = paper;
-                }
-            });
-        },
-        addQuestion: function addQuestion() {
-            this.addingQuestion = true;
-        },
-        onQuestionCancel: function onQuestionCancel() {
-            this.addingQuestion = false;
-        },
-        onCreateQuestion: function onCreateQuestion(question) {
-            this.paper.questions.push(question);
-            this.addingQuestion = false;
-            this.$refs.form.validateField('questions');
-        },
-        onSaveQuestion: function onSaveQuestion(id, question) {
-            this.$set(this.paper.questions, id, question);
-        },
-        onRemoveQuestion: function onRemoveQuestion(id) {
-            this.paper.questions.splice(id, 1);
-        },
-        onQuestionUp: function onQuestionUp(id) {
-            if (id === 0) {
-                return;
-            }
-            var questions = this.paper.questions;
-            var temp = questions[id];
-            this.$set(questions, id, questions[id - 1]);
-            this.$set(questions, id - 1, temp);
-        },
-        onQuestionDown: function onQuestionDown(id) {
-            var questions = this.paper.questions;
-            if (id === questions.length - 1) {
-                return;
-            }
-            var temp = questions[id];
-            this.$set(questions, id, questions[id + 1]);
-            this.$set(questions, id + 1, temp);
-        },
-        save: function save() {
-            var _this3 = this;
-
-            var url = this.paper.id ? '/api/papers/' + this.paper.id + '/update' : '/api/papers/store';
-            var answers = [];
-            this.$refs.form.validate(function (valid) {
-                if (valid) {
-                    var questions = _this3.paper.questions.map(function (item) {
-                        answers.push(item.answer);
-                        return {
-                            question: item.title,
-                            type: item.type,
-                            score: item.score,
-                            options: item.options
-                        };
-                    });
-                    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(url, {
-                        title: _this3.paper.title,
-                        time_limit: _this3.paper.time_limit,
-                        questions: questions,
-                        answers: answers
-                    }).then(function (response) {
-                        if (!response.data.errors) {
-                            _this3.$message({
-                                message: _this3.paper.id ? '保存成功' : '创建成功',
-                                type: 'success'
-                            });
-                        } else {
-                            _this3.$message({
-                                message: _this3.paper.id ? '保存失败' : '创建失败',
-                                type: 'error'
-                            });
-                        }
-                    });
-                }
-            });
+          });
         }
-    },
-    mounted: function mounted() {
-        if (this.$route.name === 'editPaper') {
-            var id = this.$route.params.id;
-            this.loadPaper(id);
-        }
-    },
-
-    watch: {
-        '$route': function $route(val) {
-            this.addingQuestion = false;
-            if (this.$route.name === 'createPaper') {
-                this.paper = {
-                    title: '',
-                    time_limit: 60,
-                    questions: [],
-                    answers: []
-                };
-            } else if (this.$route.name === 'editPaper') {
-                var id = /papers\/(\d+)\/edit/.exec(val.path)[1];
-                this.loadPaper(id);
-            }
-        }
+      });
     }
+  },
+  mounted: function mounted() {
+    if (this.$route.name === 'editPaper') {
+      var id = this.$route.params.id;
+      this.loadPaper(id);
+    }
+  },
+
+  watch: {
+    '$route': function $route(val) {
+      this.addingQuestion = false;
+      if (this.$route.name === 'createPaper') {
+        this.paper = {
+          title: '',
+          time_limit: 60,
+          questions: [],
+          answers: []
+        };
+      } else if (this.$route.name === 'editPaper') {
+        var id = /papers\/(\d+)\/edit/.exec(val.path)[1];
+        this.loadPaper(id);
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -40518,7 +40639,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "el-form-item",
-            { attrs: { label: "类型", prop: "time_limit" } },
+            { attrs: { label: "时间", prop: "time_limit" } },
             [
               _c(
                 "el-input",
@@ -40537,6 +40658,46 @@ var render = function() {
             ],
             1
           ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "" } },
+            [
+              _c(
+                "el-checkbox",
+                {
+                  model: {
+                    value: _vm.paper.needPassword,
+                    callback: function($$v) {
+                      _vm.$set(_vm.paper, "needPassword", $$v)
+                    },
+                    expression: "paper.needPassword"
+                  }
+                },
+                [_vm._v("是否需要密码")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.paper.needPassword
+            ? _c(
+                "el-form-item",
+                { attrs: { label: "密码", prop: "password" } },
+                [
+                  _c("el-input", {
+                    model: {
+                      value: _vm.paper.password,
+                      callback: function($$v) {
+                        _vm.$set(_vm.paper, "password", $$v)
+                      },
+                      expression: "paper.password"
+                    }
+                  })
+                ],
+                1
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "div",
