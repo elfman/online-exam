@@ -8,7 +8,7 @@ class Paper extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers', 'password'];
+    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers', 'password', 'open_time'];
 
     public function creator()
     {
@@ -29,5 +29,10 @@ class Paper extends Model
             $value = json_encode($value, true);
         }
         $this->attributes['answers'] = $value;
+    }
+
+    public function getOpenTimeAttribute($value)
+    {
+        return new \DateTime($value);
     }
 }

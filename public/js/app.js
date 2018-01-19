@@ -36979,8 +36979,11 @@ __WEBPACK_IMPORTED_MODULE_7_axios___default.a.interceptors.response.use(function
   }
   return res;
 }, function (error) {
-  console.log(error);
-  return Promise.reject(error);
+  console.error(error);
+  return Promise.resolve({
+    errors: error.status,
+    data: error.data
+  });
 });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
@@ -38548,6 +38551,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -38587,6 +38599,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this2.papers.splice(scope.$index, 1);
         }
       });
+    },
+    getOpenText: function getOpenText(row) {
+      if (row.open_time && new Date(row.open_time) > Date.now()) {
+        return '未开始';
+      }
+      return '已开始';
     }
   },
   created: function created() {
@@ -38691,6 +38709,45 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: { prop: "created_at", label: "创建时间", width: "180" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { label: "开始时间", width: "100" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    scope.row.open_time
+                      ? _c(
+                          "el-popover",
+                          { attrs: { trigger: "click", placement: "top" } },
+                          [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(scope.row.open_time) +
+                                "\n          "
+                            ),
+                            _c(
+                              "el-button",
+                              {
+                                attrs: { slot: "reference", type: "text" },
+                                slot: "reference"
+                              },
+                              [_vm._v(_vm._s(_vm.getOpenText(scope.row)))]
+                            )
+                          ],
+                          1
+                        )
+                      : _c(
+                          "span",
+                          { attrs: { slot: "reference" }, slot: "reference" },
+                          [_vm._v("已开始")]
+                        )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
@@ -39643,7 +39700,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-59530218] {\n  width: 700px;\n  margin: 0 auto;\n}\n.has-score[data-v-59530218] {\n  text-align: center;\n}\n.need-password[data-v-59530218] {\n  margin-bottom: 18px;\n}\n.need-password p[data-v-59530218] {\n    margin: 6px 0;\n}\n.start-test[data-v-59530218] {\n  text-align: center;\n}\n.paper[data-v-59530218] {\n  width: 100%;\n}\n.paper-header[data-v-59530218] {\n  text-align: center;\n  margin: 20px 0 14px;\n}\n.paper-header .title[data-v-59530218] {\n    font-size: 28px;\n}\n.paper-header .subtitle[data-v-59530218] {\n    font-size: 24px;\n    margin-top: 16px;\n}\n.question .title[data-v-59530218] {\n  font-size: 16px;\n  margin: 12px 0;\n}\n.submit[data-v-59530218] {\n  margin-top: 25px;\n  text-align: center;\n}\n.submit > *[data-v-59530218] {\n    width: 120px;\n    font-size: 18px;\n}\nlabel.el-radio[data-v-59530218], label.el-checkbox[data-v-59530218] {\n  display: block;\n  margin-left: 0 !important;\n  line-height: 16px;\n}\nlabel.el-radio[data-v-59530218]:not(:first-child), label.el-checkbox[data-v-59530218]:not(:first-child) {\n    margin-top: 10px;\n}\n.answer-status[data-v-59530218] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 260px;\n}\n.answer-status .left-time[data-v-59530218] {\n    float: right;\n}\n.answer-status .numbers[data-v-59530218] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.answer-status span[data-v-59530218] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.answer-status span.done[data-v-59530218] {\n      background-color: #409eff;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-59530218] {\n  width: 700px;\n  margin: 0 auto;\n}\n.has-score[data-v-59530218] {\n  text-align: center;\n}\n.need-password[data-v-59530218] {\n  margin-bottom: 18px;\n}\n.need-password p[data-v-59530218] {\n    margin: 6px 0;\n}\n.wait-for-open p[data-v-59530218] {\n  font-size: 18px;\n}\n.wait-for-open div[data-v-59530218] {\n  font-size: 26px;\n}\n.start-test[data-v-59530218] {\n  text-align: center;\n}\n.paper[data-v-59530218] {\n  width: 100%;\n}\n.paper-header[data-v-59530218] {\n  text-align: center;\n  margin: 20px 0 14px;\n}\n.paper-header .title[data-v-59530218] {\n    font-size: 28px;\n}\n.paper-header .subtitle[data-v-59530218] {\n    font-size: 24px;\n    margin-top: 16px;\n}\n.question .title[data-v-59530218] {\n  font-size: 16px;\n  margin: 12px 0;\n}\n.submit[data-v-59530218] {\n  margin-top: 25px;\n  text-align: center;\n}\n.submit > *[data-v-59530218] {\n    width: 120px;\n    font-size: 18px;\n}\nlabel.el-radio[data-v-59530218], label.el-checkbox[data-v-59530218] {\n  display: block;\n  margin-left: 0 !important;\n  line-height: 16px;\n}\nlabel.el-radio[data-v-59530218]:not(:first-child), label.el-checkbox[data-v-59530218]:not(:first-child) {\n    margin-top: 10px;\n}\n.answer-status[data-v-59530218] {\n  position: fixed;\n  right: 40px;\n  top: 150px;\n  width: 260px;\n}\n.answer-status .left-time[data-v-59530218] {\n    float: right;\n}\n.answer-status .numbers[data-v-59530218] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n    margin-left: -6px;\n    margin-right: -6px;\n}\n.answer-status span[data-v-59530218] {\n    display: inline-block;\n    width: 32px;\n    height: 32px;\n    line-height: 32px;\n    border: 1px solid #979797;\n    border-radius: 50%;\n    text-align: center;\n    margin: 6px;\n}\n.answer-status span.done[data-v-59530218] {\n      background-color: #409eff;\n}\n", ""]);
 
 // exports
 
@@ -39658,6 +39715,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
+//
+//
+//
+//
 //
 //
 //
@@ -39753,7 +39814,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       lastScore: null,
       password: '',
       passwordError: null,
-      errorMessage: null
+      errorMessage: null,
+      openTime: null
     };
   },
 
@@ -39763,7 +39825,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       this.checkingStatus = true;
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/papers/' + this.$route.params.id + '/check').then(function (res) {
-
         _this.checkingStatus = false;
         var data = res.data;
         _this.testStatus = data.errors;
@@ -39771,6 +39832,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this.setupPaper(data);
         } else if (data.errors === 3) {
           _this.lastScore = data.score;
+        } else if (data.errors === 5) {
+          _this.openTime = new Date(data.open_time);
+          _this.startCountDown();
         }
       });
     },
@@ -39970,15 +40034,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     updateLeftTime: function updateLeftTime() {
-      var time = Math.floor((this.deadline - new Date()) / 1000);
+      var time = (this.paper ? this.deadline : this.openTime) - new Date();
       if (time < 0) {
         time = 0;
       }
+      this.leftTime = this.beautifyTime(time);
+    },
+    beautifyTime: function beautifyTime(ms) {
+      var time = Math.floor(ms / 1000);
       var hour = Math.floor(time / 3600);
-      var minute = Math.floor((time - 3600 * hour) / 60);
-      var second = time - hour * 3600 - minute * 60;
-      var str = (hour > 9 ? hour : '0' + hour) + ':' + (minute > 9 ? minute : '0' + minute) + ':' + (second > 9 ? second : '0' + second);
-      this.leftTime = str;
+      var day = 0;
+      if (hour > 23) {
+        day = Math.floor(hour / 24);
+        hour = hour % 24;
+      }
+      var minute = Math.floor((time - 3600 * (hour + day * 24)) / 60);
+      var second = time - (hour + day * 24) * 3600 - minute * 60;
+      return '' + (day > 0 ? day + '天 ' : '') + (hour > 9 ? hour : '0' + hour) + ':' + (minute > 9 ? minute : '0' + minute) + ':' + (second > 9 ? second : '0' + second);
     }
   },
   beforeDestroy: function beforeDestroy() {
@@ -40097,6 +40169,16 @@ var render = function() {
                           ],
                           1
                         )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.testStatus === 5
+                      ? _c("div", { staticClass: "wait-for-open" }, [
+                          _c("p", [_vm._v("测试会在尚未开启，请耐心等待...")]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "count-down" }, [
+                            _vm._v(_vm._s(_vm.leftTime))
+                          ])
+                        ])
                       : _vm._e(),
                     _vm._v(" "),
                     _vm.testStatus === 0 ||
@@ -40418,6 +40500,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40462,6 +40554,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         needPassword: false,
         password: '',
         title: '',
+        openLater: false,
+        openTime: null,
         time_limit: 60,
         questions: [],
         answers: []
@@ -40488,6 +40582,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             item.title = item.question;
           });
           paper.needPassword = !!paper.password;
+          paper.openLater = !!paper.open_time;
+          paper.openTime = new Date(paper.open_time);
           _this2.paper = paper;
         }
       });
@@ -40548,6 +40644,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             time_limit: _this3.paper.time_limit,
             need_password: _this3.paper.needPassword,
             password: _this3.paper.needPassword ? _this3.paper.password : undefined,
+            open_later: _this3.paper.openLater,
+            open_time: _this3.paper.openTime,
             questions: questions,
             answers: answers
           }).then(function (response) {
@@ -40661,7 +40759,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "el-form-item",
-            { attrs: { label: "" } },
+            { staticStyle: { "margin-bottom": "8px" }, attrs: { label: "" } },
             [
               _c(
                 "el-checkbox",
@@ -40692,6 +40790,47 @@ var render = function() {
                         _vm.$set(_vm.paper, "password", $$v)
                       },
                       expression: "paper.password"
+                    }
+                  })
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { staticStyle: { "margin-bottom": "8px" }, attrs: { label: "" } },
+            [
+              _c(
+                "el-checkbox",
+                {
+                  model: {
+                    value: _vm.paper.openLater,
+                    callback: function($$v) {
+                      _vm.$set(_vm.paper, "openLater", $$v)
+                    },
+                    expression: "paper.openLater"
+                  }
+                },
+                [_vm._v("是否延时开启")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.paper.openLater
+            ? _c(
+                "el-form-item",
+                { attrs: { label: "开始时间", prop: "open_time" } },
+                [
+                  _c("el-date-picker", {
+                    attrs: { type: "datetime", placeholder: "请选择日期时间" },
+                    model: {
+                      value: _vm.paper.openTime,
+                      callback: function($$v) {
+                        _vm.$set(_vm.paper, "openTime", $$v)
+                      },
+                      expression: "paper.openTime"
                     }
                   })
                 ],

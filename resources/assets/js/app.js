@@ -38,8 +38,11 @@ axios.interceptors.response.use(res => {
   }
   return res;
 }, error => {
-  console.log(error);
-  return Promise.reject(error);
+  console.error(error);
+  return Promise.resolve({
+    errors: error.status,
+    data: error.data,
+  });
 });
 
 Vue.use(VueRouter);

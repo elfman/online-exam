@@ -12,6 +12,10 @@
           <p>该试卷需要密码才能访问</p>
           <el-input size="small" style="width: 200px;" placeholder="请输入密码" v-model="password"></el-input>
         </div>
+        <div class="wait-for-open" v-if="testStatus === 5">
+          <p>测试会在尚未开启，请耐心等待...</p>
+          <div class="count-down">{{ leftTime }}</div>
+        </div>
         <el-button type="primary" @click="startTest" size="large" v-if="testStatus === 0 || testStatus === 3 || testStatus === 4">开始测试</el-button>
       </template>
     </div>
@@ -94,13 +98,13 @@
         password: '',
         passwordError: null,
         errorMessage: null,
+        openTime: null,
       };
     },
     methods: {
       checkTestStatus() {
         this.checkingStatus = true;
         axios.get(`/api/papers/${this.$route.params.id}/check`).then(res => {
-
           this.checkingStatus = false;
           const data = res.data;
           this.testStatus = data.errors;
@@ -108,6 +112,9 @@
             this.setupPaper(data);
           } else if (data.errors === 3) {
             this.lastScore = data.score;
+          } else if (data.errors === 5) {
+            this.openTime = new Date(data.open_time);
+            this.startCountDown();
           }
         });
       },
@@ -294,15 +301,23 @@
         }
       },
       updateLeftTime() {
-        let time = Math.floor((this.deadline - new Date()) / 1000);
+        let time = (this.paper ? this.deadline : this.openTime) - new Date();
         if (time < 0) {
           time = 0;
         }
-        const hour = Math.floor(time / 3600);
-        let minute = Math.floor((time - 3600 * hour) / 60);
-        let second = time - hour * 3600 - minute * 60;
-        let str = `${hour > 9 ? hour : '0' + hour}:${minute > 9 ? minute : '0' + minute}:${second > 9 ? second : '0' + second}`;
-        this.leftTime = str;
+        this.leftTime = this.beautifyTime(time);
+      },
+      beautifyTime(ms) {
+        const time = Math.floor(ms / 1000);
+        let hour = Math.floor(time / 3600);
+        let day = 0;
+        if (hour > 23) {
+          day = Math.floor(hour / 24);
+          hour = hour % 24;
+        }
+        let minute = Math.floor((time - 3600 * (hour + day * 24)) / 60);
+        let second = time - (hour + day * 24) * 3600 - minute * 60;
+        return `${day > 0 ? day + '天 ' : ''}${hour > 9 ? hour : '0' + hour}:${minute > 9 ? minute : '0' + minute}:${second > 9 ? second : '0' + second}`;
       }
     },
     beforeDestroy() {
@@ -329,6 +344,16 @@
     margin-bottom: 18px;
     p {
       margin: 6px 0;
+    }
+  }
+
+  .wait-for-open {
+    p {
+      font-size: 18px;
+    }
+
+    div {
+      font-size: 26px;
     }
   }
 

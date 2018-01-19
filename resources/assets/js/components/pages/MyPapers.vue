@@ -20,6 +20,15 @@
       </el-table-column>
       <el-table-column prop="participation_count" label="已参加人数" width="100"></el-table-column>
       <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
+      <el-table-column label="开始时间" width="100">
+        <template slot-scope="scope">
+          <el-popover trigger="click" placement="top" v-if="scope.row.open_time">
+            {{ scope.row.open_time }}
+            <el-button type="text" slot="reference">{{ getOpenText(scope.row) }}</el-button>
+          </el-popover>
+          <span slot="reference" v-else>已开始</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="operations" label="操作" width="150">
         <template slot-scope="scope">
           <router-link :to="{ name: 'paper', params: { id: scope.row.id } }">
@@ -69,6 +78,12 @@
             this.papers.splice(scope.$index, 1);
           }
         });
+      },
+      getOpenText(row) {
+        if (row.open_time && new Date(row.open_time) > Date.now()) {
+          return '未开始';
+        }
+        return '已开始';
       }
     },
     created: function () {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Score;
 use App\Models\Paper;
 use DateTime;
+use Encore\Admin\Form\Field\Date;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaperRequest;
 use Auth;
@@ -34,7 +35,7 @@ class PapersController extends Controller
     public function myPapers()
     {
         $papers = Paper::where('creator_id', Auth::id())->select(
-            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'password', 'participation_count', 'created_at')
+            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'password', 'participation_count', 'created_at', 'open_time')
             ->orderBy('created_at')->get();
         return response()->json([
             'errors' => 0,
@@ -69,6 +70,10 @@ class PapersController extends Controller
             $data['password'] = $request->get('password');
         }
 
+        if ($request->get('open_later')) {
+            $data['open_time'] = $request->get('open_time');
+        }
+
 		$paper = Paper::create($data);
         return response()->json([
             'error' => 0,
@@ -101,6 +106,7 @@ class PapersController extends Controller
         $data['total_score'] = $total_score;
 
         $data['password'] = $request->get('need_password') ? $request->get('password') : null;
+        $data['open_time'] = $request->get('open_later') ? new DateTime($request->get('open_time')) : null;
 
 		$paper->update($data);
 
@@ -151,15 +157,27 @@ class PapersController extends Controller
     {
         $user_id = Auth::id();
         $cacheData = Cache::get($this->getAnswerCacheKey($paper->id, $user_id));
+
+        $now = new DateTime();
+
         // 如果有缓存，且还有考试时间
-        if ($cacheData && $cacheData['deadline'] > new DateTime()) {
-            return response()->json([
-                'errors' => 1,
-                'score_id' => $cacheData['score_id'],
-                'paper' => $paper,
-                'answers' => $cacheData['answers'],
-                'deadline' => $cacheData['deadline']->format('c'),
-            ]);
+        if ($cacheData) {
+            if ($paper->open_time > $now) {
+                return response()->json([
+                    'errors' => 5,
+                    'msg' => 'this test has not start yet',
+                    'open_time' => $paper->open_time->format('c'),
+                ]);
+            }
+            if ($cacheData['deadline'] > $now) {
+                return response()->json([
+                    'errors' => 1,
+                    'score_id' => $cacheData['score_id'],
+                    'paper' => $paper,
+                    'answers' => $cacheData['answers'],
+                    'deadline' => $cacheData['deadline']->format('c'),
+                ]);
+            }
         }
 
         $score = Score::where('user_id', $user_id)
@@ -167,15 +185,23 @@ class PapersController extends Controller
             ->first();
 
         if ($score) {
-            if ($score->score === null) {
+            if ($paper->open_time > $now) {
+                return response()->json([
+                    'errors' => 5,
+                    'msg' => 'this test has not start yet',
+                    'open_time' => $paper->open_time->format('c'),
+                ]);
+            }
+            $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+            if ($score->score === null && $deadline > new DateTime()) { // 未提交，返回题目继续
                 return response()->json([
                     'errors' => 2,
                     'score_id' => $score->id,
                     'paper' => $paper,
                     'answers' => $score->answers,
-                    'deadline' => $this->getScoreDeadline($score->start_time, $paper->time_limit),
+                    'deadline' => $deadline,
                 ]);
-            } else {
+            } else { // 已提交，返回分数
                 return response()->json([
                     'errors' => 3,
                     'score' => $score->score,
@@ -230,6 +256,14 @@ class PapersController extends Controller
         ];
 
         Cache::put($cacheKey, $cacheData, $deadline);
+
+        if ($paper->open_time > new DateTime()) {
+            return response()->json([
+                'errors' => 5,
+                'msg' => 'this test has not start yet',
+                'open_time' => $paper->open_time->format('c'),
+            ]);
+        }
 
         $paperData = [
             'id' => $paper->id,

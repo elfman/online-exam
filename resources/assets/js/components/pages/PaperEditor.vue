@@ -9,11 +9,21 @@
           <template slot="append">分钟</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="">
+      <el-form-item label="" style="margin-bottom: 8px;">
         <el-checkbox v-model="paper.needPassword">是否需要密码</el-checkbox>
       </el-form-item>
       <el-form-item label="密码" v-if="paper.needPassword" prop="password">
         <el-input v-model="paper.password"></el-input>
+      </el-form-item>
+      <el-form-item label="" style="margin-bottom: 8px;">
+        <el-checkbox v-model="paper.openLater">是否延时开启</el-checkbox>
+      </el-form-item>
+      <el-form-item label="开始时间" prop="open_time" v-if="paper.openLater">
+        <el-date-picker
+          v-model="paper.openTime"
+          type="datetime"
+          placeholder="请选择日期时间"
+        ></el-date-picker>
       </el-form-item>
       <div>
         <div v-for="(item, index) in paper.questions" :key="index" class="question">
@@ -98,6 +108,8 @@
           needPassword: false,
           password: '',
           title: '',
+          openLater: false,
+          openTime: null,
           time_limit: 60,
           questions: [],
           answers: [],
@@ -121,6 +133,8 @@
               item.title = item.question;
             });
             paper.needPassword = !!paper.password;
+            paper.openLater = !!paper.open_time;
+            paper.openTime = new Date(paper.open_time);
             this.paper = paper;
           }
         });
@@ -179,6 +193,8 @@
               time_limit: this.paper.time_limit,
               need_password: this.paper.needPassword,
               password: this.paper.needPassword ? this.paper.password : undefined,
+              open_later: this.paper.openLater,
+              open_time: this.paper.openTime,
               questions,
               answers,
             }).then(response => {
