@@ -33,6 +33,6 @@ class Paper extends Model
 
     public function getOpenTimeAttribute($value)
     {
-        return new \DateTime($value);
+        return $value === null ? null : new \DateTime($value);
     }
 }

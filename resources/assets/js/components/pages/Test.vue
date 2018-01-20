@@ -13,7 +13,7 @@
           <el-input size="small" style="width: 200px;" placeholder="请输入密码" v-model="password"></el-input>
         </div>
         <div class="wait-for-open" v-if="testStatus === 5">
-          <p>测试会在尚未开启，请耐心等待...</p>
+          <p>测试尚未开启，请耐心等待...</p>
           <div class="count-down">{{ leftTime }}</div>
         </div>
         <el-button type="primary" @click="startTest" size="large" v-if="testStatus === 0 || testStatus === 3 || testStatus === 4">开始测试</el-button>
@@ -143,6 +143,8 @@
               this.errorMessage = '你已完成该测试';
             } else if (data.errors === 3) {
               this.errorMessage = '密码错误';
+            } else {
+              this.errorMessage = '发生未知错误';
             }
           }
         });
@@ -161,10 +163,11 @@
             let onConfirm = () => {
               this.$router.push({ name: 'myscores' });
             };
-            if (data.errors === 1) {
+            console.log(data);
+            if (data.errors === 3) {
               msg = `你的成绩已出，本次提交无效，你的成绩为${data.score}分`;
             } else if (data.errors === 2) {
-              msg = `你的提交已超时，以服务器上最后保存的答案做评分，你的成绩为${data.score}分`;
+              msg = `你的提交已超时，以服务器上最后保存的答案做评分，你上次的成绩为${data.score}分`;
             } else {
               msg = '未知错误';
               onConfirm = null;
@@ -304,6 +307,9 @@
         let time = (this.paper ? this.deadline : this.openTime) - new Date();
         if (time < 0) {
           time = 0;
+        }
+        if (time <= 0) {
+          this.startTest();
         }
         this.leftTime = this.beautifyTime(time);
       },

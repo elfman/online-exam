@@ -24,13 +24,6 @@ import lodash from 'lodash';
 import types from './store/mutationTypes';
 import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.component('paper-component', require('./components/pages/Paper.vue'));
-Vue.component('paper-editor', require('./components/pages/PaperEditor.vue'));
-Vue.component('question', require('./components/Question.vue'));
-
-Object.defineProperty(Vue.prototype, '$axios', {value: axios});
-Object.defineProperty(Vue.prototype, '$_', {value: lodash});
-
 axios.interceptors.response.use(res => {
   if (res.status === 401) {
     localStorage.removeItem('token');

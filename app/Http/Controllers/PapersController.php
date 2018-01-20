@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Score;
 use App\Models\Paper;
 use DateTime;
-use Encore\Admin\Form\Field\Date;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaperRequest;
 use Auth;
-use Illuminate\Support\Facades\Mail;
 use Log;
 use Cache;
 
@@ -162,7 +160,7 @@ class PapersController extends Controller
 
         // 如果有缓存，且还有考试时间
         if ($cacheData) {
-            if ($paper->open_time > $now) {
+            if ($paper->open_time !== null && $paper->open_time > $now) {
                 return response()->json([
                     'errors' => 5,
                     'msg' => 'this test has not start yet',
@@ -185,7 +183,7 @@ class PapersController extends Controller
             ->first();
 
         if ($score) {
-            if ($paper->open_time > $now) {
+            if ($paper->open_time !== null && $paper->open_time > $now) {
                 return response()->json([
                     'errors' => 5,
                     'msg' => 'this test has not start yet',
@@ -257,7 +255,7 @@ class PapersController extends Controller
 
         Cache::put($cacheKey, $cacheData, $deadline);
 
-        if ($paper->open_time > new DateTime()) {
+        if ($paper->open_time !== null && $paper->open_time > new DateTime()) {
             return response()->json([
                 'errors' => 5,
                 'msg' => 'this test has not start yet',
@@ -338,18 +336,20 @@ class PapersController extends Controller
         $totalScore = null;
         $answers = null;
 
+        if ($score->score !== null) {
+            // 已有分数，不再重新评分
+            return response()->json([
+                'errors' => 3,
+                'score' => $score->score,
+            ]);
+        }
+
         $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
-        if ($deadline->add(new \DateInterval('PT20S')) < new DateTime()) { //考虑延迟，限时可推迟20秒
+        if ($deadline->add(new \DateInterval('PT30S')) < new DateTime()) { //考虑延迟，限时可推迟20秒
             $isOvertime = true;
             if ($score->score === null) {
                 // 如提交超时，以缓存中的答案为准
                 $answers = (Cache::get($this->getAnswerCacheKey($paper->id, Auth::id())))['answers'];
-            } else {
-                // 已有分数，不再重新评分
-                return response()->json([
-                    'errors' => 1,
-                    'score' => $score->score,
-                ]);
             }
         }
 
