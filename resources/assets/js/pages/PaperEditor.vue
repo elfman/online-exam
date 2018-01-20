@@ -59,6 +59,7 @@
 
 <script>
   import axios from 'axios';
+  import Question from '../components/Question.vue';
 
   export default {
     data() {
@@ -215,7 +216,7 @@
         });
       }
     },
-    mounted() {
+    created() {
       if (this.$route.name === 'editPaper') {
         const id = this.$route.params.id;
         this.loadPaper(id);
@@ -237,6 +238,9 @@
         }
       }
     },
+    components: {
+      question: Question,
+    }
   }
 </script>
 

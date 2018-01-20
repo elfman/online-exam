@@ -1,11 +1,11 @@
 /**
  * Created by luoxiongwen on 2018/1/7.
  */
-import MyPapers from './components/pages/MyPapers.vue';
-import Login from './components/pages/Login.vue';
-import Test from './components/pages/Test.vue';
-import PaperEditor from './components/pages/PaperEditor.vue';
-import Scores from './components/pages/Scores.vue';
+import MyPapers from './pages/MyPapers.vue';
+import Login from './pages/Login.vue';
+import Test from './pages/Test.vue';
+import PaperEditor from './pages/PaperEditor.vue';
+import Scores from './pages/Scores.vue';
 
 function requireAuth(to, from, next) {
   if (!localStorage.token) {

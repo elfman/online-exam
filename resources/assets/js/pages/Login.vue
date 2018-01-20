@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import Navbar from '../user/Navbar.vue';
+    import Navbar from '../components/user/Navbar.vue';
     import axios from 'axios';
     export default {
         components: {

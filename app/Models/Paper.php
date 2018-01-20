@@ -30,9 +30,4 @@ class Paper extends Model
         }
         $this->attributes['answers'] = $value;
     }
-
-    public function getOpenTimeAttribute($value)
-    {
-        return $value === null ? null : new \DateTime($value);
-    }
 }

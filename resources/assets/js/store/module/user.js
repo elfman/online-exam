@@ -83,6 +83,10 @@ const mutations = {
     state.avatar = null;
     state.name = null;
     state.id = null;
+  },
+  [types.CLEAR_AUTH_INFO](state) {
+    state.token = null;
+    state.expires = null;
   }
 };
 

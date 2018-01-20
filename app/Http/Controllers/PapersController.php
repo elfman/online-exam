@@ -160,11 +160,11 @@ class PapersController extends Controller
 
         // 如果有缓存，且还有考试时间
         if ($cacheData) {
-            if ($paper->open_time !== null && $paper->open_time > $now) {
+            if ($paper->open_time !== null && new DateTime($paper->open_time) > $now) {
                 return response()->json([
                     'errors' => 5,
                     'msg' => 'this test has not start yet',
-                    'open_time' => $paper->open_time->format('c'),
+                    'open_time' => (new DateTime($paper->open_time))->format('c'),
                 ]);
             }
             if ($cacheData['deadline'] > $now) {
@@ -183,11 +183,11 @@ class PapersController extends Controller
             ->first();
 
         if ($score) {
-            if ($paper->open_time !== null && $paper->open_time > $now) {
+            if ($paper->open_time !== null && new DateTime($paper->open_time) > $now) {
                 return response()->json([
                     'errors' => 5,
                     'msg' => 'this test has not start yet',
-                    'open_time' => $paper->open_time->format('c'),
+                    'open_time' => (new DateTime($paper->open_time))->format('c'),
                 ]);
             }
             $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
@@ -255,11 +255,11 @@ class PapersController extends Controller
 
         Cache::put($cacheKey, $cacheData, $deadline);
 
-        if ($paper->open_time !== null && $paper->open_time > new DateTime()) {
+        if ($paper->open_time !== null && new DateTime($paper->open_time) > new DateTime()) {
             return response()->json([
                 'errors' => 5,
                 'msg' => 'this test has not start yet',
-                'open_time' => $paper->open_time->format('c'),
+                'open_time' => (new DateTime($paper->open_time))->format('c'),
             ]);
         }
 

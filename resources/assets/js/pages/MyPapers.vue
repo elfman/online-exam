@@ -46,6 +46,7 @@
 
 <script>
   import axios from 'axios';
+  import _ from 'lodash';
 
   export default {
     data() {
@@ -57,13 +58,13 @@
     methods: {
       loadPapers() {
         this.loading = true;
-        this.$axios.get('/api/papers/my').then(res => {
+        axios.get('/api/papers/my').then(res => {
           this.loading = false;
           let data = res.data;
           if (!data.errors) {
             this.papers = data.papers.map((item, index) => {
               const content = JSON.parse(item.content);
-              return this.$_.assign({}, item, {
+              return _.assign({}, item, {
                 questions: content,
               })
             })

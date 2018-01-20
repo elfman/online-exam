@@ -14,13 +14,11 @@
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Vuex from 'vuex';
 import store from './store/store';
 import routes from './routes';
-import App from './components/App.vue';
+import App from './App.vue';
 import ElementUI from 'element-ui';
 import axios from 'axios';
-import lodash from 'lodash';
 import types from './store/mutationTypes';
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -31,11 +29,12 @@ axios.interceptors.response.use(res => {
   }
   return res;
 }, error => {
-  console.error(error);
-  return Promise.resolve({
-    errors: error.status,
-    data: error.data,
-  });
+  if (error.response.status === 401) {
+    app.$store.commit(types.CLEAR_USER_INFO);
+    app.$store.commit(types.CLEAR_AUTH_INFO);
+    app.$router.push({ name: 'login', query: { redirect: app.$route.fullPath } });
+  }
+  return Promise.reject(error);
 });
 
 Vue.use(VueRouter);
