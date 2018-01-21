@@ -38410,7 +38410,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "\n.dialog-content[data-v-89f46220] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.dialog-content span[data-v-89f46220] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    width: 60px;\n    font-size: 16px;\n}\n", ""]);
 
 // exports
 
@@ -38504,6 +38504,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -38512,7 +38520,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       papers: null,
-      loading: false
+      loading: false,
+      showLinkDialog: false,
+      dialogLink: '',
+      dialogTitle: ''
     };
   },
 
@@ -38550,6 +38561,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return '未开始';
       }
       return '已开始';
+    },
+    handleLinkClick: function handleLinkClick(row) {
+      this.dialogTitle = row.title;
+      this.dialogLink = location.href + 'papers/' + row.id;
+      if (row.password) {
+        this.dialogLink += '?password=' + row.password;
+      }
+      this.showLinkDialog = true;
     }
   },
   created: function created() {
@@ -38577,6 +38596,66 @@ var render = function() {
           ])
         ],
         1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: { visible: _vm.showLinkDialog },
+          on: {
+            "update:visible": function($event) {
+              _vm.showLinkDialog = $event
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "dialog-content" },
+            [
+              _c("span", [_vm._v("链接")]),
+              _vm._v(" "),
+              _c("el-input", {
+                model: {
+                  value: _vm.dialogLink,
+                  callback: function($$v) {
+                    _vm.dialogLink = $$v
+                  },
+                  expression: "dialogLink"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("span", { attrs: { slot: "title" }, slot: "title" }, [
+            _vm._v(_vm._s(_vm.dialogTitle))
+          ]),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  attrs: { type: "primary" },
+                  on: {
+                    click: function($event) {
+                      _vm.showLinkDialog = false
+                    }
+                  }
+                },
+                [_vm._v("关闭")]
+              )
+            ],
+            1
+          )
+        ]
       ),
       _vm._v(" "),
       _c(
@@ -38703,18 +38782,16 @@ var render = function() {
                 fn: function(scope) {
                   return [
                     _c(
-                      "router-link",
+                      "el-button",
                       {
-                        attrs: {
-                          to: { name: "paper", params: { id: scope.row.id } }
+                        attrs: { type: "text" },
+                        on: {
+                          click: function($event) {
+                            _vm.handleLinkClick(scope.row)
+                          }
                         }
                       },
-                      [
-                        _c("el-button", { attrs: { type: "text" } }, [
-                          _vm._v("查看")
-                        ])
-                      ],
-                      1
+                      [_vm._v("链接")]
                     ),
                     _vm._v(" "),
                     _c(
@@ -39777,6 +39854,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var data = res.data;
         _this.testStatus = data.errors;
         if (data.errors === 1 || data.errors === 2) {
+          _this.$message.info('继续未完成的测试');
           _this.setupPaper(data);
         } else if (data.errors === 3) {
           _this.lastScore = data.score;
@@ -40013,6 +40091,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.stopCountDown();
   },
   mounted: function mounted() {
+    if (this.$route.query.password) {
+      this.password = this.$route.query.password;
+    }
     this.checkTestStatus();
   }
 });

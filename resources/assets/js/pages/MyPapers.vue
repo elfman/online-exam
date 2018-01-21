@@ -3,6 +3,16 @@
     <router-link :to="{ name: 'createPaper' }">
       <el-button type="primary">添加新试卷</el-button>
     </router-link>
+    <el-dialog :visible.sync="showLinkDialog">
+      <div class="dialog-content">
+        <span>链接</span>
+        <el-input v-model="dialogLink"></el-input>
+      </div>
+      <span slot="title">{{ dialogTitle }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showLinkDialog = false" type="primary">关闭</el-button>
+      </span>
+    </el-dialog>
     <el-table :data="papers" v-loading="loading">
       <el-table-column type="index" label="#"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
@@ -31,9 +41,7 @@
       </el-table-column>
       <el-table-column prop="operations" label="操作" width="150">
         <template slot-scope="scope">
-          <router-link :to="{ name: 'paper', params: { id: scope.row.id } }">
-            <el-button type="text">查看</el-button>
-          </router-link>
+          <el-button type="text" @click="handleLinkClick(scope.row)">链接</el-button>
           <router-link :to="{ name: 'editPaper', params: { id: scope.row.id } }">
             <el-button type="text">编辑</el-button>
           </router-link>
@@ -53,6 +61,9 @@
       return {
         papers: null,
         loading: false,
+        showLinkDialog: false,
+        dialogLink: '',
+        dialogTitle: '',
       };
     },
     methods: {
@@ -85,6 +96,14 @@
           return '未开始';
         }
         return '已开始';
+      },
+      handleLinkClick(row) {
+        this.dialogTitle = row.title;
+        this.dialogLink = location.href + 'papers/' + row.id;
+        if (row.password) {
+          this.dialogLink += `?password=${row.password}`;
+        }
+        this.showLinkDialog = true;
       }
     },
     created: function () {
@@ -94,5 +113,14 @@
 </script>
 
 <style lang="scss" scoped>
-
+  .dialog-content {
+    display: flex;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      font-size: 16px;
+    }
+  }
 </style>

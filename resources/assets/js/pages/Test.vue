@@ -112,6 +112,7 @@
           const data = res.data;
           this.testStatus = data.errors;
           if (data.errors === 1 || data.errors === 2) {
+            this.$message.info('继续未完成的测试');
             this.setupPaper(data);
           } else if (data.errors === 3) {
             this.lastScore = data.score;
@@ -337,6 +338,9 @@
       this.stopCountDown();
     },
     mounted() {
+      if (this.$route.query.password) {
+        this.password = this.$route.query.password;
+      }
       this.checkTestStatus();
     }
   }
