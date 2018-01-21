@@ -235,16 +235,14 @@ class PapersController extends Controller
                     'msg' => 'wrong password',
                 ]);
             }
-            $score = Score::create([
-                'user_id' => $user_id,
-                'paper_id' => $paper->id,
-                'start_time' => now(),
-            ]);
         } else {
-            $score->start_time = now();
-            $score->score = null;
-            $score->save();
+            $score->delete();
         }
+        $score = Score::create([
+            'user_id' => $user_id,
+            'paper_id' => $paper->id,
+            'start_time' => now(),
+        ]);
 
         $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
         $cacheData = [

@@ -308,8 +308,9 @@
         if (time < 0) {
           time = 0;
         }
-        if (time <= 0) {
+        if (!this.paper && time <= 0) {
           this.startTest();
+          this.stopCountDown();
         }
         this.leftTime = this.beautifyTime(time);
       },

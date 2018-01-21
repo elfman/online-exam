@@ -37301,7 +37301,7 @@ var actions = {
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
           if (!redirect) {
-            redirect = '/mypapers';
+            redirect = '/papers';
           }
           app.$router.replace(redirect);
         }
@@ -37320,7 +37320,7 @@ var actions = {
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
           if (!redirect) {
-            redirect = '/mypapers';
+            redirect = '/papers';
           }
           app.$router.replace(redirect);
         }
@@ -38293,7 +38293,7 @@ var routes = [{
   path: '/',
   name: 'mypapers',
   component: __WEBPACK_IMPORTED_MODULE_0__pages_MyPapers_vue___default.a,
-  alias: '/mypapers',
+  alias: '/papers',
   beforeEnter: requireAuth
 }, {
   path: '/login',
@@ -38316,7 +38316,7 @@ var routes = [{
   component: __WEBPACK_IMPORTED_MODULE_2__pages_Test_vue___default.a,
   beforeEnter: requireAuth
 }, {
-  path: '/myscores',
+  path: '/scores',
   name: 'myscores',
   component: __WEBPACK_IMPORTED_MODULE_4__pages_Scores_vue___default.a,
   beforeEnter: requireAuth
@@ -39123,10 +39123,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     var index = void 0;
     switch (this.$route.name) {
       case 'mypapers':
-        index = '/mypapers';
+        index = '/papers';
         break;
       case 'myscores':
-        index = '/myscores';
+        index = '/scores';
         break;
       default:
         index = null;
@@ -39187,7 +39187,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "el-menu-item",
-        { attrs: { index: "mypapers", route: { name: "mypapers" } } },
+        { attrs: { index: "papers", route: { name: "mypapers" } } },
         [_vm._v("我的试卷")]
       ),
       _vm._v(" "),
@@ -39986,8 +39986,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (time < 0) {
         time = 0;
       }
-      if (time <= 0) {
+      if (!this.paper && time <= 0) {
         this.startTest();
+        this.stopCountDown();
       }
       this.leftTime = this.beautifyTime(time);
     },

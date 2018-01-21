@@ -23,7 +23,7 @@ const routes = [
     path: '/',
     name: 'mypapers',
     component: MyPapers,
-    alias: '/mypapers',
+    alias: '/papers',
     beforeEnter: requireAuth,
   }, {
     path: '/login',
@@ -46,7 +46,7 @@ const routes = [
     component: Test,
     beforeEnter: requireAuth,
   }, {
-    path: '/myscores',
+    path: '/scores',
     name: 'myscores',
     component: Scores,
     beforeEnter: requireAuth,

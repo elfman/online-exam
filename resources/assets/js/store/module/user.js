@@ -26,7 +26,7 @@ const actions = {
           commit(types.SET_USER_INFO, data.user);
           let redirect = global.app.$route.query.redirect;
           if (!redirect) {
-            redirect = '/mypapers';
+            redirect = '/papers';
           }
           app.$router.replace(redirect);
         }
@@ -44,7 +44,7 @@ const actions = {
           commit(types.SET_USER_INFO, data.user);
           let redirect = global.app.$route.query.redirect;
           if (!redirect) {
-            redirect = '/mypapers';
+            redirect = '/papers';
           }
           app.$router.replace(redirect);
         }

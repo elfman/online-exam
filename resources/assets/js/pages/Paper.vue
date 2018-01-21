@@ -180,7 +180,7 @@
                 let title = '成绩';
                 let content = `您的分数为${score}分`;
                 let onConfirm = () => {
-                    window.location.replace('/myscores');
+                  this.$router.replace({ name: 'myscores' });
                 };
                 this.showModal(title, content, onConfirm);
             },

@@ -3,7 +3,7 @@
     <div class="logo">
       线上考试系统
     </div>
-      <el-menu-item index="mypapers" :route="{ name: 'mypapers' }">我的试卷</el-menu-item>
+      <el-menu-item index="papers" :route="{ name: 'mypapers' }">我的试卷</el-menu-item>
       <el-menu-item index="myscores" :route="{ name: 'myscores' }">我的成绩</el-menu-item>
     <div class="right">
       <template>
@@ -33,10 +33,10 @@
       let index;
       switch (this.$route.name) {
         case 'mypapers':
-          index = '/mypapers';
+          index = '/papers';
           break;
         case 'myscores':
-          index = '/myscores';
+          index = '/scores';
           break;
         default:
           index = null;
