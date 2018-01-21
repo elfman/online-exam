@@ -9,6 +9,9 @@
           <template slot="append">分钟</template>
         </el-input>
       </el-form-item>
+      <el-form-item label="重考次数" prop="repeat_limit">
+        <el-input v-model.number="paper.repeat_limit"></el-input>
+      </el-form-item>
       <el-form-item label="" style="margin-bottom: 8px;">
         <el-checkbox v-model="paper.needPassword">是否需要密码</el-checkbox>
       </el-form-item>
@@ -63,7 +66,7 @@
 
   export default {
     data() {
-      const validateTimeLimit = (rule, value, callback) => {
+      const validateDigit = (rule, value, callback) => {
         const reg = /^[0-9]*[1-9][0-9]*$/;
         if (!reg.test(value)) {
           callback(new Error('请输入一个大于0的整数'));
@@ -94,7 +97,11 @@
         ],
         time_limit: [
           { required: true, message: '请输入考试时长', trigger: 'blur' },
-          { validator: validateTimeLimit, trigger: 'blur' },
+          { validator: validateDigit, trigger: 'blur' },
+        ],
+        repeat_limit: [
+          { required: true, message: '请输入最多能重复考试的次数', trigger: 'blur' },
+          { validator: validateDigit, trigger: 'blur' },
         ],
         password: [
           { validator: validatePassword, trigger: 'blur' },
@@ -114,6 +121,7 @@
           time_limit: 60,
           questions: [],
           answers: [],
+          repeat_limit: 1,
         },
         addingQuestion: false,
         loading: false,
@@ -196,6 +204,7 @@
               password: this.paper.needPassword ? this.paper.password : undefined,
               open_later: this.paper.openLater,
               open_time: this.paper.openTime,
+              repeat_limit: this.paper.repeat_limit,
               questions,
               answers,
             }).then(response => {

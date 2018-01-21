@@ -16,6 +16,9 @@
           <p>测试尚未开启，请耐心等待...</p>
           <div class="count-down">{{ leftTime }}</div>
         </div>
+        <div class="times-limit" v-if="testStatus === 6">
+          <p>你的参与次数已达上限，不能再参加此次考试！</p>
+        </div>
         <el-button type="primary" @click="startTest" size="large" v-if="testStatus === 0 || testStatus === 3 || testStatus === 4">开始测试</el-button>
       </template>
     </div>
@@ -115,6 +118,8 @@
           } else if (data.errors === 5) {
             this.openTime = new Date(data.open_time);
             this.startCountDown();
+          } else if (data.errors === 6) {
+
           }
         });
       },

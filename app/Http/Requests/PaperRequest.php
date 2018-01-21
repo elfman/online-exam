@@ -14,7 +14,8 @@ class PaperRequest extends Request
             'open_later' => 'boolean',
             'open_time' => 'required_if:open_later,true|date',
             'questions' => 'required|array|min:1',
-            'answers' => 'required|array'
+            'answers' => 'required|array',
+            'repeat_limit' => 'required|numeric|min:1'
         ];
     }
 

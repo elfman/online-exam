@@ -43,6 +43,8 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
         'creator_id' => $faker->randomElement($users),
         'created_at' => $created_at,
         'updated_at' => $updated_at,
+        'open_time' => $faker->boolean() ? $faker->dateTimeAd() : null,
+        'repeat_limit' => $faker->boolean() ? $faker->randomNumber(5) : 1,
     ];
 });
 

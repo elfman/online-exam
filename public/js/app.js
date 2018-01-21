@@ -39732,6 +39732,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -39780,7 +39783,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else if (data.errors === 5) {
           _this.openTime = new Date(data.open_time);
           _this.startCountDown();
-        }
+        } else if (data.errors === 6) {}
       });
     },
     startTest: function startTest() {
@@ -40129,6 +40132,14 @@ var render = function() {
                           _vm._v(" "),
                           _c("div", { staticClass: "count-down" }, [
                             _vm._v(_vm._s(_vm.leftTime))
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.testStatus === 6
+                      ? _c("div", { staticClass: "times-limit" }, [
+                          _c("p", [
+                            _vm._v("你的参与次数已达上限，不能再参加此次考试！")
                           ])
                         ])
                       : _vm._e(),
@@ -40515,6 +40526,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -40523,7 +40537,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     var _this = this;
 
-    var validateTimeLimit = function validateTimeLimit(rule, value, callback) {
+    var validateDigit = function validateDigit(rule, value, callback) {
       var reg = /^[0-9]*[1-9][0-9]*$/;
       if (!reg.test(value)) {
         callback(new Error('请输入一个大于0的整数'));
@@ -40550,7 +40564,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
     var rules = {
       title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-      time_limit: [{ required: true, message: '请输入考试时长', trigger: 'blur' }, { validator: validateTimeLimit, trigger: 'blur' }],
+      time_limit: [{ required: true, message: '请输入考试时长', trigger: 'blur' }, { validator: validateDigit, trigger: 'blur' }],
+      repeat_limit: [{ required: true, message: '请输入最多能重复考试的次数', trigger: 'blur' }, { validator: validateDigit, trigger: 'blur' }],
       password: [{ validator: validatePassword, trigger: 'blur' }],
       questions: [{ validator: validateQuestions, trigger: 'submit' }]
     };
@@ -40564,7 +40579,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         openTime: null,
         time_limit: 60,
         questions: [],
-        answers: []
+        answers: [],
+        repeat_limit: 1
       },
       addingQuestion: false,
       loading: false
@@ -40652,6 +40668,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             password: _this3.paper.needPassword ? _this3.paper.password : undefined,
             open_later: _this3.paper.openLater,
             open_time: _this3.paper.openTime,
+            repeat_limit: _this3.paper.repeat_limit,
             questions: questions,
             answers: answers
           }).then(function (response) {
@@ -40762,6 +40779,23 @@ var render = function() {
                 [_c("template", { slot: "append" }, [_vm._v("分钟")])],
                 2
               )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "重考次数", prop: "repeat_limit" } },
+            [
+              _c("el-input", {
+                model: {
+                  value: _vm.paper.repeat_limit,
+                  callback: function($$v) {
+                    _vm.$set(_vm.paper, "repeat_limit", _vm._n($$v))
+                  },
+                  expression: "paper.repeat_limit"
+                }
+              })
             ],
             1
           ),

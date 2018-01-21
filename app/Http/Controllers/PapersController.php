@@ -54,7 +54,7 @@ class PapersController extends Controller
 
 	public function store(PaperRequest $request)
 	{
-        $data = $request->only(['title', 'questions', 'time_limit', 'answers']);
+        $data = $request->only(['title', 'questions', 'time_limit', 'answers', 'repeat_limit']);
         $total_score = 0;
 
         foreach ($data['questions'] as $question) {
@@ -95,7 +95,7 @@ class PapersController extends Controller
 	public function update(PaperRequest $request, Paper $paper)
 	{
 		$this->authorize('update', $paper);
-		$data = $request->only(['title', 'questions', 'time_limit', 'answers']);
+		$data = $request->only(['title', 'questions', 'time_limit', 'answers', 'repeat_limit']);
 		$total_score = 0;
 
 		foreach ($data['questions'] as $question) {
@@ -200,9 +200,12 @@ class PapersController extends Controller
                     'deadline' => $deadline,
                 ]);
             } else { // 已提交，返回分数
+                $count = Score::where('user_id', $user_id)->where('paper_id', $paper->id)->withTrashed()->count();
                 return response()->json([
-                    'errors' => 3,
+                    'errors' => $count >= $paper->repeat_limit ? 6 : 3,
                     'score' => $score->score,
+                    'repeat_limit' => $paper->repeat_limit,
+                    'count' => $count,
                 ]);
             }
         }
@@ -236,6 +239,15 @@ class PapersController extends Controller
                 ]);
             }
         } else {
+            $count = Score::where('user_id', $user_id)->where('paper_id', $paper->id)->withTrashed()->count();
+            if ($count >= $paper->repeat_limit) {
+                return response()->json([
+                    'errors' => 6,
+                    'msg' => 'you has exam too many times',
+                    'repeat_limit' => $paper->repeat_limit,
+                    'count' => $count,
+                ]);
+            }
             $score->delete();
         }
         $score = Score::create([

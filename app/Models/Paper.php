@@ -8,7 +8,7 @@ class Paper extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers', 'password', 'open_time'];
+    protected $fillable = ['title', 'creator_id', 'total_score', 'content', 'time_limit', 'participation_count', 'answers', 'password', 'open_time', 'repeat_limit'];
 
     public function creator()
     {
@@ -30,4 +30,5 @@ class Paper extends Model
         }
         $this->attributes['answers'] = $value;
     }
+
 }
