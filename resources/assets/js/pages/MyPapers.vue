@@ -32,20 +32,23 @@
       <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
       <el-table-column label="开始时间" width="100">
         <template slot-scope="scope">
-          <el-popover trigger="click" placement="top" v-if="scope.row.open_time">
+          <el-popover trigger="hover" placement="top" v-if="scope.row.open_time">
             {{ scope.row.open_time }}
             <el-button type="text" slot="reference">{{ getOpenText(scope.row) }}</el-button>
           </el-popover>
-          <span slot="reference" v-else>已开始</span>
+          <span slot="reference" v-else>未设定</span>
         </template>
       </el-table-column>
-      <el-table-column prop="operations" label="操作" width="150">
+      <el-table-column prop="operations" label="操作" width="170">
         <template slot-scope="scope">
           <el-button type="text" @click="handleLinkClick(scope.row)">链接</el-button>
           <router-link :to="{ name: 'editPaper', params: { id: scope.row.id } }">
             <el-button type="text">编辑</el-button>
           </router-link>
           <el-button type="text" @click="removePaper(scope)">删除</el-button>
+          <router-link :to="{ name: 'examStatus', params: { id: scope.row.id } }">
+            <el-button type="text">状态</el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>

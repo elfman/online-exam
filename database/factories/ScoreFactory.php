@@ -15,7 +15,7 @@ $factory->define(Score::class, function (Faker $faker) {
     $paper = Paper::find($faker->randomElement($papers));
     $answers = genAnswers($faker, json_decode($paper->content));
     $score = computeScore($answers, $paper);
-    $startTime = $faker->dateTimeThisMonth();
+    $startTime = $faker->dateTime($paper->created_at);
     $completeTime = Carbon\Carbon::instance($startTime)->addMinute($paper->time_limit - $faker->numberBetween(10, $paper->time_limit));
     return [
         'user_id' => $faker->randomElement($users),
@@ -24,5 +24,7 @@ $factory->define(Score::class, function (Faker $faker) {
         'score' => $score,
         'start_time' => $startTime,
         'complete_time' => $completeTime,
+        'created_at' => $startTime,
+        'updated_at' => $startTime,
     ];
 });

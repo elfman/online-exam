@@ -6,6 +6,7 @@ import Login from './pages/Login.vue';
 import Test from './pages/Test.vue';
 import PaperEditor from './pages/PaperEditor.vue';
 import Scores from './pages/Scores.vue';
+import ExamStatus from './pages/ExamStatus.vue';
 
 function requireAuth(to, from, next) {
   if (!localStorage.token) {
@@ -49,6 +50,11 @@ const routes = [
     path: '/scores',
     name: 'myscores',
     component: Scores,
+    beforeEnter: requireAuth,
+  }, {
+    path: '/papers/:id/status',
+    name: 'examStatus',
+    component: ExamStatus,
     beforeEnter: requireAuth,
   }
 ];

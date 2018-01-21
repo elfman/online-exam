@@ -3,26 +3,6 @@
 use App\Models\User;
 use Faker\Generator as Faker;
 
-function genPaperContent(Faker $faker, $count = 20)
-{
-    $content = [];
-    for ($i = 0; $i < $count; $i++) {
-        $item = [];
-        $item['question'] = $faker->sentence();
-        $item['type'] = $faker->randomElement(['single', 'multi']);
-        if ($item['type'] == 'single' || $item['type'] == 'multi') {
-            $options = [];
-            for ($j = 0; $j < 4; $j++) {
-                $options[$j] = $faker->sentence();
-            }
-            $item['options'] = $options;
-        }
-        $item['score'] = 5;
-        array_push($content, $item);
-    }
-    return $content;
-}
-
 
 
 $factory->define(App\Models\Paper::class, function (Faker $faker) {
@@ -38,12 +18,13 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
 
     return [
         'title' => $faker->sentence(),
-        'content' => $content,
-        'answers' => $answers,
+        'content' => json_encode($content),
+        'answers' => json_encode($answers),
         'creator_id' => $faker->randomElement($users),
         'created_at' => $created_at,
         'updated_at' => $updated_at,
-        'open_time' => $faker->boolean() ? $faker->dateTimeAd() : null,
+        'password' => $faker->boolean() ? $faker->password(3, 6) : null,
+        'open_time' => $faker->boolean() ? $faker->dateTimeBetween('now', '2 months') : null,
         'repeat_limit' => $faker->boolean() ? $faker->randomNumber(5) : 1,
     ];
 });

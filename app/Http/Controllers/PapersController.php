@@ -391,4 +391,26 @@ class PapersController extends Controller
             'score' => $totalScore,
         ]);
 	}
+
+    public function status(Paper $paper)
+    {
+        $this->authorize('update', $paper);
+        $scores = Score::where('paper_id', $paper->id)->with('user')->get();
+        return response()->json([
+            'errors' => 0,
+            'scores' => $scores,
+            'paper' => $paper,
+        ]);
+	}
+
+    public function removeScore(Score $score)
+    {
+        $this->authorize('delete', $score);
+
+        $score->forceDelete();
+
+        return response()->json([
+            'errors' => 0,
+        ]);
+	}
 }

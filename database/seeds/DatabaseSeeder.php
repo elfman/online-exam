@@ -3,6 +3,26 @@
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
 
+function genPaperContent(Faker $faker, $count = 20)
+{
+    $content = [];
+    for ($i = 0; $i < $count; $i++) {
+        $item = [];
+        $item['question'] = $faker->sentence();
+        $item['type'] = $faker->randomElement(['single', 'multi']);
+        if ($item['type'] == 'single' || $item['type'] == 'multi') {
+            $options = [];
+            for ($j = 0; $j < 4; $j++) {
+                array_push($options, $faker->sentence());
+            }
+            $item['options'] = $options;
+        }
+        $item['score'] = 5;
+        array_push($content, $item);
+    }
+    return $content;
+}
+
 function genAnswers(Faker $faker, $content)
 {
     $result = [];

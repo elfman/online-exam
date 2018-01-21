@@ -40,4 +40,8 @@ Route::group([
     $router->get('/myscores', 'PapersController@myScores');
     $router->post('/autoSave', 'PapersController@autoSave');
     $router->get('/{paper}/check', 'PapersController@checkTestStatus');
+    $router->get('/{paper}/status', 'PapersController@status');
 });
+
+
+Route::get('/scores/{score}/remove', 'PapersController@removeScore');

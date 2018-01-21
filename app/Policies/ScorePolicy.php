@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Paper;
 use App\Models\User;
 use App\Models\Score;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -54,6 +55,7 @@ class ScorePolicy
      */
     public function delete(User $user, Score $score)
     {
-        return $score->user_id === $user->id;
+        $paper = Paper::find($score->paper_id);
+        return $paper->creator_id === $user->id;
     }
 }
