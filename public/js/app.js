@@ -39908,6 +39908,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this.openTime = new Date(data.open_time);
           _this.startCountDown();
         } else if (data.errors === 6) {}
+      }).catch(function (error) {
+        console.log(error);
+        _this.$message.error('获取试卷内容时发生未知出错');
       });
     },
     startTest: function startTest() {
@@ -39941,6 +39944,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             _this2.errorMessage = '发生未知错误';
           }
         }
+      }).catch(function (error) {
+        console.error(error);
+        _this2.$message.error('发生未知错误');
       });
     },
     submit: function submit() {
@@ -39970,6 +39976,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           }
           _this3.showDialog('发生错误', msg, onConfirm);
         }
+      }).catch(function (error) {
+        console.error(error);
+        _this3.$message.error('发生未知错误');
       });
     },
     autoSave: function autoSave() {
@@ -40804,7 +40813,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 message: _this3.paper.id ? '保存成功' : '创建成功',
                 type: 'success'
               });
-              _this3.$router.replace({ name: 'mypapers' });
             } else {
               _this3.$message({
                 message: _this3.paper.id ? '保存失败' : '创建失败',

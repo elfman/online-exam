@@ -31,16 +31,16 @@ Route::group([
     'prefix' => 'papers',
 ], function ($router) {
     $router->get('my', 'PapersController@myPapers');
-    $router->post('/{paper}/start', 'PapersController@startTest');
+    $router->get('/{paper}/status', 'PapersController@status');
     $router->get('/{paper}/edit', 'PapersController@edit');
     $router->post('/{paper}/update', 'PapersController@update');
     $router->get('/{paper}/remove', 'PapersController@destroy');
     $router->post('/store', 'PapersController@store');
-    $router->post('/submit/{score}', 'PapersController@submit');
-    $router->get('/myscores', 'PapersController@myScores');
-    $router->post('/autoSave', 'PapersController@autoSave');
-    $router->get('/{paper}/check', 'PapersController@checkTestStatus');
-    $router->get('/{paper}/status', 'PapersController@status');
+    $router->post('/submit/{score}', 'ScoresController@submit');
+    $router->post('/{paper}/start', 'ScoresController@startTest');
+    $router->get('/myscores', 'ScoresController@myScores');
+    $router->post('/autoSave', 'ScoresController@autoSave');
+    $router->get('/{paper}/check', 'ScoresController@checkTestStatus');
 });
 
 

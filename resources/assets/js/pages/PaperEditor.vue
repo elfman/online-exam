@@ -213,7 +213,6 @@
                   message: this.paper.id ? '保存成功' : '创建成功',
                   type: 'success',
                 });
-                this.$router.replace({ name: 'mypapers' });
               } else {
                 this.$message({
                   message: this.paper.id ? '保存失败' : '创建失败',

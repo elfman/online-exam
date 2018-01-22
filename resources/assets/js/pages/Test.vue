@@ -120,8 +120,10 @@
             this.openTime = new Date(data.open_time);
             this.startCountDown();
           } else if (data.errors === 6) {
-
           }
+        }).catch(error => {
+          console.log(error);
+          this.$message.error('获取试卷内容时发生未知出错');
         });
       },
       startTest() {
@@ -153,6 +155,9 @@
               this.errorMessage = '发生未知错误';
             }
           }
+        }).catch(error => {
+          console.error(error);
+          this.$message.error('发生未知错误');
         });
       },
       submit() {
@@ -180,6 +185,9 @@
             }
             this.showDialog('发生错误', msg, onConfirm);
           }
+        }).catch(error => {
+          console.error(error);
+          this.$message.error('发生未知错误');
         });
       },
       autoSave() {
