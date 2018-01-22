@@ -38873,7 +38873,7 @@ var render = function() {
                       },
                       [
                         _c("el-button", { attrs: { type: "text" } }, [
-                          _vm._v("状态")
+                          _vm._v("统计")
                         ])
                       ],
                       1
@@ -100110,6 +100110,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -100142,7 +100155,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       },
       tooltips: {
         callbacks: {
-          title: function title(item, data) {
+          title: function title(item) {
             return '题目 ' + item[0].xLabel;
           },
           label: function label(item) {
@@ -100156,6 +100169,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       responsive: false,
       legend: {
         display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            min: 0
+          }
+        }]
+      },
+      tooltips: {
+        callbacks: {
+          title: function title(item) {
+            return '分数：' + item[0].xLabels;
+          }
+        }
       }
     };
     return {
@@ -100169,12 +100196,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       averageTime: null,
       passCount: null,
       accuracies: null,
-      //        accuracyData: null,
       accuracyOption: accuracyOption,
       scoreChartOption: scoreChartOption,
-      accuracyRangeLength: 25,
+      chartRangeLength: 25,
       accuracyRangeIndex: 0,
-      accuracyRangeButtons: null
+      accuracyRangeButtons: null,
+      scoreChartData: null,
+      scoreRangeIndex: 0,
+      scoreRangeButtons: null
     };
   },
 
@@ -100258,18 +100287,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return (item / _this3.totalCount * 100).toFixed(2);
       });
 
-      var buttons = [];
-      for (var i = 0; i < this.paper.questions.length; i += this.accuracyRangeLength) {
-        var max = this.accuracyRangeLength + i - 1;
+      var accuracyButtons = [];
+      for (var i = 0; i < this.paper.questions.length; i += this.chartRangeLength) {
+        var max = this.chartRangeLength + i - 1;
         if (max > this.paper.questions.length) {
           max = this.paper.questions.length;
         }
-        buttons.push(i + 1 + ' - ' + max);
+        accuracyButtons.push(i + 1 + ' - ' + max);
       }
-      this.accuracyRangeButtons = buttons;
-    },
-    changeAccuracyDataRange: function changeAccuracyDataRange(index) {
-      this.accuracyRangeIndex = index;
+      this.accuracyRangeButtons = accuracyButtons;
+
+      var scoreData = new Array(Math.ceil(this.paper.total_score / 10));
+
+      _.fill(scoreData, 0);
+
+      this.scores.forEach(function (score) {
+        var index = Math.floor(score.score / 10);
+        scoreData[index]++;
+      });
+
+      this.scoreChartData = scoreData;
+
+      var scoreButtons = [];
+      this.scoreRangeIndex = null;
+      for (var _i = 0; _i < Math.ceil(this.paper.total_score / 100); _i++) {
+        var _max = (_i + 1) * 100;
+        if (_max > this.paper.total_score) {
+          _max = this.paper.total_score;
+        }
+
+        var count = 0;
+        for (var j = _i * 10; j < (_i + 1) * 10; j++) {
+          if (j >= scoreData.length) {
+            break;
+          }
+          count += scoreData[j];
+        }
+        scoreButtons.push({
+          range: _i * 100 + ' - ' + ((_i + 1) * 100 - 1),
+          count: count
+        });
+        if (this.scoreRangeIndex === null && count > 0) {
+          this.scoreRangeIndex = _i;
+        }
+      }
+      this.scoreRangeButtons = scoreButtons;
     }
   },
   mounted: function mounted() {
@@ -100280,23 +100342,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     chartData: function chartData() {
       if (!this.scores) return null;
 
-      var data = new Array(10);
+      var labels = [];
 
-      _.fill(data, 0);
+      var start = this.scoreRangeIndex * 100;
+      for (var i = 0; i < 10; i++) {
+        var max = start + (i + 1) * 10 - 1;
+        labels.push(start + i * 10 + ' - ' + max);
+        if (max >= this.paper.total_score) {
+          break;
+        }
+      }
 
-      this.scores.map(function (score) {
-        var index = Math.floor(score.score / 10);
-        data[index]++;
-      });
-      console.log(data);
       return {
-        labels: ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90-100'],
+        labels: labels,
         datasets: [{
           label: '人数',
           fillColor: '#409eff',
           strokeColor: '#rgba(220, 220, 220, 1)',
           barStrokeWidth: 1,
-          data: data
+          data: _.slice(this.scoreChartData, this.scoreRangeIndex * 10, (this.scoreRangeIndex + 1) * 10)
         }]
       };
     },
@@ -100304,14 +100368,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (!this.paper) return null;
 
       var labels = null;
-      if (this.paper.questions.length <= this.accuracyRangeLength) {
+      if (this.paper.questions.length <= this.chartRangeLength) {
         labels = _.range(1, this.paper.questions.length + 1, 1);
       } else {
-        var max = this.accuracyRangeLength * (this.accuracyRangeIndex + 1);
+        var max = this.chartRangeLength * (this.accuracyRangeIndex + 1);
         if (max > this.paper.questions.length) {
           max = this.paper.questions.length;
         }
-        labels = _.range(this.accuracyRangeLength * this.accuracyRangeIndex + 1, max, 1);
+        labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max, 1);
       }
 
       return {
@@ -100320,7 +100384,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           label: '正确率',
           fillColor: '#409eff',
           strokeColor: '#rgba(220, 220, 220, 1)',
-          data: _.slice(this.accuracies, labels[0] - 1, labels[labels.length - 1] - 1)
+          data: _.slice(this.accuracies, labels[0] - 1, labels[labels.length - 1])
         }]
       };
     },
@@ -114205,9 +114269,18 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("p", [
+                _vm._v("限时："),
+                _c("span", [
+                  _vm._v(_vm._s((_vm.paper.time_limit * 60).toHHMMSS()))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("p", [
                 _vm._v("平均用时："),
                 _c("span", [_vm._v(_vm._s(_vm.averageTime.toHHMMSS()))])
               ]),
+              _vm._v(" "),
+              _c("p", [_vm._v("总分：" + _vm._s(_vm.paper.total_score))]),
               _vm._v(" "),
               _c("p", [
                 _vm._v("平均分数："),
@@ -114233,7 +114306,42 @@ var render = function() {
                       width: 600,
                       height: 400
                     }
-                  })
+                  }),
+                  _vm._v(" "),
+                  _vm.paper.total_score > 100
+                    ? _c(
+                        "div",
+                        { staticClass: "range-buttons" },
+                        _vm._l(_vm.scoreRangeButtons, function(item, index) {
+                          return _c(
+                            "el-button",
+                            {
+                              key: item.range,
+                              attrs: {
+                                size: "small",
+                                type:
+                                  _vm.scoreRangeIndex === index
+                                    ? "primary"
+                                    : "default",
+                                disabled: item.count === 0
+                              },
+                              on: {
+                                click: function($event) {
+                                  _vm.scoreRangeIndex = index
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n            " +
+                                  _vm._s(item.range + " (" + item.count + ")") +
+                                  "\n          "
+                              )
+                            ]
+                          )
+                        })
+                      )
+                    : _vm._e()
                 ],
                 1
               ),
@@ -114252,7 +114360,7 @@ var render = function() {
                     }
                   }),
                   _vm._v(" "),
-                  _vm.paper.questions.length > _vm.accuracyRangeLength
+                  _vm.paper.questions.length > _vm.chartRangeLength
                     ? _c(
                         "div",
                         { staticClass: "range-buttons" },
@@ -114270,7 +114378,7 @@ var render = function() {
                               },
                               on: {
                                 click: function($event) {
-                                  _vm.changeAccuracyDataRange(index)
+                                  _vm.accuracyRangeIndex = index
                                 }
                               }
                             },
@@ -114307,15 +114415,19 @@ var render = function() {
           _c("el-table-column", { attrs: { type: "index", label: "#" } }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "username", label: "用户名" }
+            attrs: { prop: "username", label: "用户名", sortable: "" }
           }),
           _vm._v(" "),
-          _c("el-table-column", { attrs: { prop: "score", label: "分数" } }),
-          _vm._v(" "),
-          _c("el-table-column", { attrs: { prop: "time", label: "用时" } }),
+          _c("el-table-column", {
+            attrs: { prop: "score", label: "分数", sortable: "" }
+          }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "complete_time", label: "完成时间" }
+            attrs: { prop: "time", label: "用时", sortable: "" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "complete_time", label: "完成时间", sortable: "" }
           }),
           _vm._v(" "),
           _c("el-table-column", {

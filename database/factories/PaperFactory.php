@@ -23,6 +23,7 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
         'creator_id' => $faker->randomElement($users),
         'created_at' => $created_at,
         'updated_at' => $updated_at,
+        'total_score' => sizeof($content )* 5,
         'password' => $faker->boolean() ? $faker->password(3, 6) : null,
         'open_time' => $faker->boolean() ? $faker->dateTimeBetween('now', '2 months') : null,
         'repeat_limit' => $faker->boolean() ? $faker->randomNumber(5) : 1,

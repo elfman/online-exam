@@ -47,7 +47,7 @@
           </router-link>
           <el-button type="text" @click="removePaper(scope)">删除</el-button>
           <router-link :to="{ name: 'examStatus', params: { id: scope.row.id } }">
-            <el-button type="text">状态</el-button>
+            <el-button type="text">统计</el-button>
           </router-link>
         </template>
       </el-table-column>

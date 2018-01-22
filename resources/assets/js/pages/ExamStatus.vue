@@ -4,7 +4,9 @@
     <div class="analysis" v-if="paper">
       <div>
         <p>参与人数：<span>{{ totalCount }}</span></p>
+        <p>限时：<span>{{ (paper.time_limit * 60).toHHMMSS() }}</span></p>
         <p>平均用时：<span>{{ averageTime.toHHMMSS() }}</span></p>
+        <p>总分：{{ paper.total_score }}</p>
         <p>平均分数：<span>{{ averageScore.toFixed(2) }}</span></p>
         <p>及格人数：<span>{{ passCount }}</span></p>
       </div>
@@ -12,16 +14,27 @@
         <div>
           <p>分数统计：</p>
           <score-chart :chart-data="chartData" :options="scoreChartOption" :width="600" :height="400"></score-chart>
+          <div class="range-buttons" v-if="paper.total_score > 100">
+            <el-button
+              size="small"
+              v-for="(item, index) in scoreRangeButtons" :key="item.range"
+              :type="scoreRangeIndex === index ? 'primary' : 'default'"
+              @click="scoreRangeIndex = index"
+              :disabled="item.count === 0"
+            >
+              {{ `${item.range} (${item.count})` }}
+            </el-button>
+          </div>
         </div>
         <div>
           <p>正确率统计：</p>
           <score-chart :chart-data="accuracyData"  :options="accuracyOption" :width="600" :height="400"></score-chart>
-          <div class="range-buttons" v-if="paper.questions.length > accuracyRangeLength">
+          <div class="range-buttons" v-if="paper.questions.length > chartRangeLength">
             <el-button
               size="small"
               v-for="(item, index) in accuracyRangeButtons" :key="item"
               :type="accuracyRangeIndex === index ? 'primary' : 'default'"
-              @click="changeAccuracyDataRange(index)"
+              @click="accuracyRangeIndex = index"
             >
               {{ item }}
             </el-button>
@@ -31,10 +44,10 @@
     </div>
     <el-table :data="tableData" v-loading="loading">
       <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="username" label="用户名"></el-table-column>
-      <el-table-column prop="score" label="分数"></el-table-column>
-      <el-table-column prop="time" label="用时"></el-table-column>
-      <el-table-column prop="complete_time" label="完成时间"></el-table-column>
+      <el-table-column prop="username" label="用户名" sortable></el-table-column>
+      <el-table-column prop="score" label="分数" sortable></el-table-column>
+      <el-table-column prop="time" label="用时" sortable></el-table-column>
+      <el-table-column prop="complete_time" label="完成时间" sortable></el-table-column>
       <el-table-column prop="operations" label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="handleAnswerClick(scope.$index)">查看答案</el-button>
@@ -83,7 +96,7 @@
         },
         tooltips: {
           callbacks: {
-            title: (item, data) => {
+            title: (item) => {
               return '题目 ' + item[0].xLabel;
             },
             label: item => {
@@ -97,6 +110,20 @@
         responsive: false,
         legend: {
           display: false,
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              min: 0,
+            }
+          }]
+        },
+        tooltips: {
+          callbacks: {
+            title: (item) => {
+              return '分数：' + item[0].xLabels;
+            }
+          }
         }
       };
       return {
@@ -110,12 +137,14 @@
         averageTime: null,
         passCount: null,
         accuracies: null,
-//        accuracyData: null,
         accuracyOption,
         scoreChartOption,
-        accuracyRangeLength: 25,
+        chartRangeLength: 25,
         accuracyRangeIndex: 0,
         accuracyRangeButtons: null,
+        scoreChartData: null,
+        scoreRangeIndex: 0,
+        scoreRangeButtons: null,
       };
     },
     methods: {
@@ -189,19 +218,54 @@
         this.passCount = passCount;
         this.accuracies = correctCount.map(item => ((item / this.totalCount) * 100).toFixed(2));
 
-        const buttons = [];
-        for (let i = 0; i < this.paper.questions.length; i+=this.accuracyRangeLength) {
-          let max = this.accuracyRangeLength + i - 1;
+        const accuracyButtons = [];
+        for (let i = 0; i < this.paper.questions.length; i+=this.chartRangeLength) {
+          let max = this.chartRangeLength + i - 1;
           if (max > this.paper.questions.length) {
             max = this.paper.questions.length;
           }
-          buttons.push(`${i + 1} - ${max}`)
+          accuracyButtons.push(`${i + 1} - ${max}`)
         }
-        this.accuracyRangeButtons = buttons;
+        this.accuracyRangeButtons = accuracyButtons;
+
+
+        const scoreData = new Array(Math.ceil(this.paper.total_score / 10));
+
+        _.fill(scoreData, 0);
+
+        this.scores.forEach(score => {
+          const index = Math.floor(score.score/10);
+          scoreData[index]++;
+        });
+
+        this.scoreChartData = scoreData;
+
+        const scoreButtons = [];
+        this.scoreRangeIndex = null;
+        for (let i = 0; i < Math.ceil(this.paper.total_score / 100); i++) {
+          let max = (i + 1) * 100;
+          if (max > this.paper.total_score) {
+            max = this.paper.total_score;
+          }
+
+          let count = 0;
+          for (let j = i * 10; j < (i + 1) * 10; j++) {
+            if (j >= scoreData.length) {
+              break;
+            }
+            count += scoreData[j];
+          }
+          scoreButtons.push({
+            range: `${i * 100} - ${(i + 1) * 100 - 1}`,
+            count,
+          });
+          if (this.scoreRangeIndex === null && count > 0) {
+            this.scoreRangeIndex = i;
+          }
+        }
+        this.scoreRangeButtons = scoreButtons;
+
       },
-      changeAccuracyDataRange(index) {
-        this.accuracyRangeIndex = index;
-      }
     },
     mounted() {
       this.loadScores();
@@ -210,24 +274,26 @@
       chartData() {
         if (!this.scores) return null;
 
-        const data = new Array(10);
+        const labels = [];
 
-        _.fill(data, 0);
+        let start = this.scoreRangeIndex * 100;
+        for (let i = 0; i < 10; i++) {
+          let max = start + (i + 1) * 10 - 1;
+          labels.push(`${start + i * 10} - ${max}`);
+          if (max >= this.paper.total_score) {
+            break;
+          }
+        }
 
-        this.scores.map(score => {
-          const index = Math.floor(score.score/10);
-          data[index]++;
-        });
-        console.log(data);
         return {
-          labels: ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90-100'],
+          labels,
           datasets: [
             {
               label: '人数',
               fillColor: '#409eff',
               strokeColor: '#rgba(220, 220, 220, 1)',
               barStrokeWidth: 1,
-              data: data,
+              data: _.slice(this.scoreChartData, this.scoreRangeIndex * 10, (this.scoreRangeIndex + 1) * 10),
             }
           ]
         }
@@ -236,14 +302,14 @@
         if (!this.paper) return null;
 
         let labels = null;
-        if (this.paper.questions.length <= this.accuracyRangeLength) {
+        if (this.paper.questions.length <= this.chartRangeLength) {
           labels = _.range(1, this.paper.questions.length + 1, 1);
         } else {
-          let max = this.accuracyRangeLength * (this.accuracyRangeIndex + 1);
+          let max = this.chartRangeLength * (this.accuracyRangeIndex + 1);
           if (max > this.paper.questions.length) {
             max = this.paper.questions.length;
           }
-          labels = _.range(this.accuracyRangeLength * this.accuracyRangeIndex + 1, max, 1);
+          labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max, 1);
         }
 
         return {
@@ -253,7 +319,7 @@
               label: '正确率',
               fillColor: '#409eff',
               strokeColor: '#rgba(220, 220, 220, 1)',
-              data: _.slice(this.accuracies, labels[0] - 1, labels[labels.length - 1] - 1),
+              data: _.slice(this.accuracies, labels[0] - 1, labels[labels.length - 1]),
             }
           ]
         };
