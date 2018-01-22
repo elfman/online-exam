@@ -21,7 +21,7 @@
       <el-table-column prop="time_limit" label="限时" width="100"></el-table-column>
       <el-table-column label="密码" width="100">
         <template slot-scope="scope">
-          <el-popover trigger="click" placement="top" v-if="scope.row.password">
+          <el-popover trigger="click" placement="top" v-if="scope.row.password" popper-class="password-popper">
             {{ scope.row.password }}
             <el-button type="text" slot="reference">查看</el-button>
           </el-popover>
@@ -114,6 +114,12 @@
     }
   }
 </script>
+
+<style>
+  .password-popper {
+    text-align: center;
+  }
+</style>
 
 <style lang="scss" scoped>
   .dialog-content {

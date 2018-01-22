@@ -38364,7 +38364,8 @@ var routes = [{
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(108)
+  __webpack_require__(436)
+  __webpack_require__(438)
 }
 var normalizeComponent = __webpack_require__(9)
 /* script */
@@ -38409,46 +38410,8 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(109);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("05e88170", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MyPapers.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MyPapers.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.dialog-content[data-v-89f46220] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.dialog-content span[data-v-89f46220] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    width: 60px;\n    font-size: 16px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 108 */,
+/* 109 */,
 /* 110 */
 /***/ (function(module, exports) {
 
@@ -38734,7 +38697,13 @@ var render = function() {
                     scope.row.password
                       ? _c(
                           "el-popover",
-                          { attrs: { trigger: "click", placement: "top" } },
+                          {
+                            attrs: {
+                              trigger: "click",
+                              placement: "top",
+                              "popper-class": "password-popper"
+                            }
+                          },
                           [
                             _vm._v(
                               "\n          " +
@@ -39205,7 +39174,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.logo[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 150px;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.right[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  margin-left: auto;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  padding-right: 10px;\n}\n.user-info[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  cursor: pointer;\n}\n.user-info img[data-v-d25756a6] {\n    width: 36px;\n    height: 36px;\n    border-radius: 50%;\n    margin-right: 8px;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.logo[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 150px;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  font-size: 18px;\n}\n.logo a[data-v-d25756a6] {\n    color: black !important;\n    text-decoration: none;\n}\n.right[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  margin-left: auto;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  padding-right: 10px;\n}\n.user-info[data-v-d25756a6] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  cursor: pointer;\n}\n.user-info img[data-v-d25756a6] {\n    width: 36px;\n    height: 36px;\n    border-radius: 50%;\n    margin-right: 8px;\n}\n", ""]);
 
 // exports
 
@@ -39254,10 +39223,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     var index = void 0;
     switch (this.$route.name) {
       case 'mypapers':
-        index = '/papers';
+        index = 'papers';
         break;
       case 'myscores':
-        index = '/scores';
+        index = 'scores';
         break;
       default:
         index = null;
@@ -39268,6 +39237,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     };
   },
 
+  watch: {
+    '$route': function $route() {
+      var index = null;
+      switch (this.$route.name) {
+        case 'mypapers':
+          index = 'papers';
+          break;
+        case 'myscores':
+          index = 'scores';
+          break;
+        default:
+          index = null;
+          break;
+      }
+
+      this.defaultIndex = index;
+    }
+  },
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapState */])({
     token: function token(state) {
       return state.user.token;
@@ -39314,7 +39301,12 @@ var render = function() {
       }
     },
     [
-      _c("div", { staticClass: "logo" }, [_vm._v("\n    线上考试系统\n  ")]),
+      _c(
+        "div",
+        { staticClass: "logo" },
+        [_c("router-link", { attrs: { to: "/" } }, [_vm._v("在线考试系统")])],
+        1
+      ),
       _vm._v(" "),
       _c(
         "el-menu-item",
@@ -39324,7 +39316,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "el-menu-item",
-        { attrs: { index: "myscores", route: { name: "myscores" } } },
+        { attrs: { index: "scores", route: { name: "myscores" } } },
         [_vm._v("我的成绩")]
       ),
       _vm._v(" "),
@@ -100038,7 +100030,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.charts[data-v-5c61a26e] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.charts > *[data-v-5c61a26e]:first-child {\n    margin-right: 30px;\n}\n@media (max-width: 700px) {\n.charts[data-v-5c61a26e] {\n    display: block;\n}\n}\n.title[data-v-5c61a26e] {\n  font-size: 18px;\n}\n.range-buttons[data-v-5c61a26e] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n", ""]);
+exports.push([module.i, "\n.badges[data-v-5c61a26e] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  height: 80px;\n  padding: 20px 40px;\n}\n.badges .score .left[data-v-5c61a26e] {\n    background-color: #409eff;\n}\n.badges .person .left[data-v-5c61a26e] {\n    background-color: #67c23a;\n}\n.badges .time .left[data-v-5c61a26e] {\n    background-color: #e6a23c;\n}\n.badges .card[data-v-5c61a26e] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    border: 1px solid #d7d7d7;\n    border-radius: 6px;\n    overflow: hidden;\n    width: 240px;\n    height: 80px;\n}\n.badges .card[data-v-5c61a26e]:hover {\n      -webkit-box-shadow: 0 0 5px 6px rgba(240, 240, 240, 0.7);\n              box-shadow: 0 0 5px 6px rgba(240, 240, 240, 0.7);\n}\n.badges .card .left[data-v-5c61a26e] {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      height: 80px;\n      width: 80px;\n      border-right: #d7d7d7;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n.badges .card .left i[data-v-5c61a26e] {\n        font-size: 30px;\n        color: white;\n}\n.badges .card .right[data-v-5c61a26e] {\n      padding: 5px 9px;\n      width: 160px;\n}\n.badges .label[data-v-5c61a26e] {\n    font-size: 14px;\n}\n.badges .data[data-v-5c61a26e] {\n    font-size: 22px;\n    text-align: right;\n}\n.badges .sub[data-v-5c61a26e] {\n    font-size: 12px;\n    text-align: right;\n}\n.charts[data-v-5c61a26e] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n.charts > *[data-v-5c61a26e]:first-child {\n    margin-right: 30px;\n}\n.charts .chart > *[data-v-5c61a26e]:nth-child(2) {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.title[data-v-5c61a26e] {\n  font-size: 18px;\n}\n.range-buttons[data-v-5c61a26e] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n", ""]);
 
 // exports
 
@@ -100057,6 +100049,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ScoreChart_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ScoreChart_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_QuestionChart_vue__ = __webpack_require__(434);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_QuestionChart_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_QuestionChart_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -100180,7 +100196,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       tooltips: {
         callbacks: {
           title: function title(item) {
-            return '分数：' + item[0].xLabels;
+            return '分数：' + item[0].xLabel;
           }
         }
       }
@@ -100289,7 +100305,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       var accuracyButtons = [];
       for (var i = 0; i < this.paper.questions.length; i += this.chartRangeLength) {
-        var max = this.chartRangeLength + i - 1;
+        var max = this.chartRangeLength + i;
         if (max > this.paper.questions.length) {
           max = this.paper.questions.length;
         }
@@ -100375,7 +100391,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (max > this.paper.questions.length) {
           max = this.paper.questions.length;
         }
-        labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max, 1);
+        labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max + 1, 1);
       }
 
       return {
@@ -114262,40 +114278,62 @@ var render = function() {
       _vm._v(" "),
       _vm.paper
         ? _c("div", { staticClass: "analysis" }, [
-            _c("div", [
-              _c("p", [
-                _vm._v("参与人数："),
-                _c("span", [_vm._v(_vm._s(_vm.totalCount))])
-              ]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v("限时："),
-                _c("span", [
-                  _vm._v(_vm._s((_vm.paper.time_limit * 60).toHHMMSS()))
+            _c("div", { staticClass: "badges" }, [
+              _c("div", { staticClass: "card score" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("div", { staticClass: "right" }, [
+                  _c("div", { staticClass: "label" }, [_vm._v("平均分数")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "data" }, [
+                    _vm._v(_vm._s(_vm.averageScore.toFixed(2)))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sub" }, [
+                    _vm._v("总分：" + _vm._s(_vm.paper.total_score))
+                  ])
                 ])
               ]),
               _vm._v(" "),
-              _c("p", [
-                _vm._v("平均用时："),
-                _c("span", [_vm._v(_vm._s(_vm.averageTime.toHHMMSS()))])
+              _c("div", { staticClass: "card person" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "right" }, [
+                  _c("div", { staticClass: "label" }, [_vm._v("及格人数")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "data" }, [
+                    _vm._v(_vm._s(_vm.passCount))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sub" }, [
+                    _vm._v("参与人数：" + _vm._s(_vm.totalCount))
+                  ])
+                ])
               ]),
               _vm._v(" "),
-              _c("p", [_vm._v("总分：" + _vm._s(_vm.paper.total_score))]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v("平均分数："),
-                _c("span", [_vm._v(_vm._s(_vm.averageScore.toFixed(2)))])
-              ]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v("及格人数："),
-                _c("span", [_vm._v(_vm._s(_vm.passCount))])
+              _c("div", { staticClass: "card time" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "right" }, [
+                  _c("div", { staticClass: "label" }, [_vm._v("平均用时")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "data" }, [
+                    _vm._v(_vm._s(_vm.averageTime.toHHMMSS()))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sub" }, [
+                    _vm._v(
+                      "限时：" + _vm._s((_vm.paper.time_limit * 60).toHHMMSS())
+                    )
+                  ])
+                ])
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "charts" }, [
               _c(
                 "div",
+                { staticClass: "chart" },
                 [
                   _c("p", [_vm._v("分数统计：")]),
                   _vm._v(" "),
@@ -114303,8 +114341,8 @@ var render = function() {
                     attrs: {
                       "chart-data": _vm.chartData,
                       options: _vm.scoreChartOption,
-                      width: 600,
-                      height: 400
+                      width: 500,
+                      height: 350
                     }
                   }),
                   _vm._v(" "),
@@ -114348,6 +114386,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
+                { staticClass: "chart" },
                 [
                   _c("p", [_vm._v("正确率统计：")]),
                   _vm._v(" "),
@@ -114355,8 +114394,8 @@ var render = function() {
                     attrs: {
                       "chart-data": _vm.accuracyData,
                       options: _vm.accuracyOption,
-                      width: 600,
-                      height: 400
+                      width: 500,
+                      height: 350
                     }
                   }),
                   _vm._v(" "),
@@ -114521,7 +114560,32 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "left" }, [
+      _c("i", { staticClass: "el-icon-document" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "left" }, [
+      _c("i", { staticClass: "el-icon-star-on" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "left" }, [
+      _c("i", { staticClass: "el-icon-time" })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -114927,6 +114991,86 @@ var reactiveProp = __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["b" /* mixins */].r
     this.renderChart(this.chartData, this.options);
   }
 });
+
+/***/ }),
+/* 436 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(437);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(6)("0c2e4b04", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MyPapers.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MyPapers.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 437 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.password-popper {\n  text-align: center;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 438 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(439);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(6)("56925f71", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=1!./MyPapers.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-89f46220\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=1!./MyPapers.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 439 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.dialog-content[data-v-89f46220] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.dialog-content span[data-v-89f46220] {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    width: 60px;\n    font-size: 16px;\n}\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

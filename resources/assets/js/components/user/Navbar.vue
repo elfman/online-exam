@@ -1,10 +1,10 @@
 <template>
   <el-menu :default-active="defaultIndex" class="container navbar-inner" mode="horizontal" :router="true">
     <div class="logo">
-      线上考试系统
+      <router-link to="/">在线考试系统</router-link>
     </div>
       <el-menu-item index="papers" :route="{ name: 'mypapers' }">我的试卷</el-menu-item>
-      <el-menu-item index="myscores" :route="{ name: 'myscores' }">我的成绩</el-menu-item>
+      <el-menu-item index="scores" :route="{ name: 'myscores' }">我的成绩</el-menu-item>
     <div class="right">
       <template>
         <el-dropdown v-if="token" size="small" @command="handleCommand">
@@ -33,10 +33,10 @@
       let index;
       switch (this.$route.name) {
         case 'mypapers':
-          index = '/papers';
+          index = 'papers';
           break;
         case 'myscores':
-          index = '/scores';
+          index = 'scores';
           break;
         default:
           index = null;
@@ -44,6 +44,24 @@
       }
       return {
         defaultIndex: index,
+      }
+    },
+    watch: {
+      '$route': function() {
+        let index = null;
+        switch (this.$route.name) {
+          case 'mypapers':
+            index = 'papers';
+            break;
+          case 'myscores':
+            index = 'scores';
+            break;
+          default:
+            index = null;
+            break;
+        }
+
+        this.defaultIndex = index;
       }
     },
     computed: {
@@ -78,6 +96,12 @@
     width: 150px;
     justify-content: center;
     align-items: center;
+    font-size: 18px;
+
+    a {
+      color: black !important;
+      text-decoration: none;
+    }
   }
   .right {
     display: flex;

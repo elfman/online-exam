@@ -2,18 +2,42 @@
   <div>
     <div class="title" v-if="paper">{{ paper.title }}</div>
     <div class="analysis" v-if="paper">
-      <div>
-        <p>参与人数：<span>{{ totalCount }}</span></p>
-        <p>限时：<span>{{ (paper.time_limit * 60).toHHMMSS() }}</span></p>
-        <p>平均用时：<span>{{ averageTime.toHHMMSS() }}</span></p>
-        <p>总分：{{ paper.total_score }}</p>
-        <p>平均分数：<span>{{ averageScore.toFixed(2) }}</span></p>
-        <p>及格人数：<span>{{ passCount }}</span></p>
+      <div class="badges">
+        <div class="card score">
+          <div class="left">
+            <i class="el-icon-document"></i>
+          </div>
+          <div class="right">
+            <div class="label">平均分数</div>
+            <div class="data">{{ averageScore.toFixed(2) }}</div>
+            <div class="sub">总分：{{ paper.total_score }}</div>
+          </div>
+        </div>
+        <div class="card person">
+          <div class="left">
+            <i class="el-icon-star-on"></i>
+          </div>
+          <div class="right">
+            <div class="label">及格人数</div>
+            <div class="data">{{ passCount }}</div>
+            <div class="sub">参与人数：{{ totalCount }}</div>
+          </div>
+        </div>
+        <div class="card time">
+          <div class="left">
+            <i class="el-icon-time"></i>
+          </div>
+          <div class="right">
+            <div class="label">平均用时</div>
+            <div class="data">{{ averageTime.toHHMMSS() }}</div>
+            <div class="sub">限时：{{ (paper.time_limit * 60).toHHMMSS() }}</div>
+          </div>
+        </div>
       </div>
       <div class="charts">
-        <div>
+        <div class="chart">
           <p>分数统计：</p>
-          <score-chart :chart-data="chartData" :options="scoreChartOption" :width="600" :height="400"></score-chart>
+          <score-chart :chart-data="chartData" :options="scoreChartOption" :width="500" :height="350"></score-chart>
           <div class="range-buttons" v-if="paper.total_score > 100">
             <el-button
               size="small"
@@ -26,9 +50,9 @@
             </el-button>
           </div>
         </div>
-        <div>
+        <div class="chart">
           <p>正确率统计：</p>
-          <score-chart :chart-data="accuracyData"  :options="accuracyOption" :width="600" :height="400"></score-chart>
+          <score-chart :chart-data="accuracyData"  :options="accuracyOption" :width="500" :height="350"></score-chart>
           <div class="range-buttons" v-if="paper.questions.length > chartRangeLength">
             <el-button
               size="small"
@@ -121,7 +145,7 @@
         tooltips: {
           callbacks: {
             title: (item) => {
-              return '分数：' + item[0].xLabels;
+              return '分数：' + item[0].xLabel;
             }
           }
         }
@@ -220,7 +244,7 @@
 
         const accuracyButtons = [];
         for (let i = 0; i < this.paper.questions.length; i+=this.chartRangeLength) {
-          let max = this.chartRangeLength + i - 1;
+          let max = this.chartRangeLength + i;
           if (max > this.paper.questions.length) {
             max = this.paper.questions.length;
           }
@@ -309,7 +333,7 @@
           if (max > this.paper.questions.length) {
             max = this.paper.questions.length;
           }
-          labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max, 1);
+          labels = _.range(this.chartRangeLength * this.accuracyRangeIndex + 1, max + 1, 1);
         }
 
         return {
@@ -349,16 +373,71 @@
 </script>
 
 <style lang="scss" scoped>
+  .badges {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    padding: 20px 40px;
+    .score .left {
+      background-color: #409eff;
+    }
+    .person .left {
+      background-color: #67c23a;
+    }
+    .time .left {
+      background-color: #e6a23c;
+    }
+    .card {
+      display: flex;
+      border: 1px solid #d7d7d7;
+      border-radius: 6px;
+      overflow: hidden;
+      width: 240px;
+      height: 80px;
+      &:hover {
+        box-shadow: 0 0 5px 6px rgba(240, 240, 240, 0.7);
+      }
+
+      .left {
+        display: flex;
+        height: 80px;
+        width: 80px;
+        border-right: #d7d7d7;
+        justify-content: center;
+        align-items: center;
+        i {
+          font-size: 30px;
+          color: white;
+        }
+      }
+      .right {
+        padding: 5px 9px;
+        width: 160px;
+      }
+    }
+    .label {
+      font-size: 14px;
+    }
+    .data {
+      font-size: 22px;
+      text-align: right;
+    }
+    .sub {
+      font-size: 12px;
+      text-align: right;
+    }
+  }
   .charts {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     > *:first-child {
       margin-right: 30px;
     }
-  }
-  @media (max-width: 700px) {
-    .charts {
-      display: block;
+    .chart > *:nth-child(2) {
+      display: flex;
+      justify-content: center;
     }
   }
   .title {
