@@ -13,7 +13,7 @@ $factory->define(App\Models\Paper::class, function (Faker $faker) {
     $updated_at = $faker->dateTimeThisMonth();
     $created_at = $faker->dateTimeThisMonth($updated_at);
 
-    $content = genPaperContent($faker);
+    $content = genPaperContent($faker, rand(10, 100));
     $answers = genAnswers($faker, $content);
 
     return [

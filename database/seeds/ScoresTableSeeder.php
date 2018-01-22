@@ -8,7 +8,7 @@ class ScoresTableSeeder extends Seeder
 {
     public function run()
     {
-        $scores = factory(Score::class)->times(500)->make();
+        $scores = factory(Score::class)->times(5000)->make();
 
         Score::insert($scores->toArray());
     }

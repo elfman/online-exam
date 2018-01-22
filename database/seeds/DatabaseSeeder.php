@@ -23,26 +23,30 @@ function genPaperContent(Faker $faker, $count = 20)
     return $content;
 }
 
-function genAnswers(Faker $faker, $content)
+function genAnswers(Faker $faker, $content, $rightAnswers = null)
 {
     $result = [];
     foreach ($content as $index => $item) {
         $item = (object)$item;
-        if ($item->type == 'single') {
-            $answer = $faker->numberBetween(0, count($item->options) - 1);
-            array_push($result, $answer);
-        } else if ($item->type == 'multi') {
-            $count = count($item->options);
-            $list = [];
-            $answer = $faker->numberBetween(1, pow(2, $count) - 1);
-            for ($i = 0; $i < $count; $i++) {
-                $temp = $answer & 1;
-                if ($temp) {
-                    array_push($list, $i);
+        if ($rightAnswers && $faker->boolean(60)) {
+            array_push($result, $rightAnswers[$index]);
+        } else {
+            if ($item->type == 'single') {
+                $answer = $faker->numberBetween(0, count($item->options) - 1);
+                array_push($result, $answer);
+            } else if ($item->type == 'multi') {
+                $count = count($item->options);
+                $list = [];
+                $answer = $faker->numberBetween(1, pow(2, $count) - 1);
+                for ($i = 0; $i < $count; $i++) {
+                    $temp = $answer & 1;
+                    if ($temp) {
+                        array_push($list, $i);
+                    }
+                    $answer = $answer >> 1;
                 }
-                $answer = $answer >> 1;
+                array_push($result, $list);
             }
-            array_push($result, $list);
         }
     }
     return $result;

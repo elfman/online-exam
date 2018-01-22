@@ -13,9 +13,9 @@ $factory->define(Score::class, function (Faker $faker) {
     $papers = $papers ?: Paper::all()->pluck('id')->toArray();
 
     $paper = Paper::find($faker->randomElement($papers));
-    $answers = genAnswers($faker, json_decode($paper->content));
+    $answers = genAnswers($faker, json_decode($paper->content), json_decode($paper->answers));
     $score = computeScore($answers, $paper);
-    $startTime = $faker->dateTime($paper->created_at);
+    $startTime = $faker->dateTimeBetween($paper->created_at);
     $completeTime = Carbon\Carbon::instance($startTime)->addMinute($paper->time_limit - $faker->numberBetween(10, $paper->time_limit));
     return [
         'user_id' => $faker->randomElement($users),
