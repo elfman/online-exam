@@ -28,6 +28,16 @@
           placeholder="请选择日期时间"
         ></el-date-picker>
       </el-form-item>
+      <el-form-item label="" style="margin-bottom: 8px;">
+        <el-checkbox v-model="paper.closeOnTime">是否定时关闭</el-checkbox>
+      </el-form-item>
+      <el-form-item label="结束时间" prop="close_time" v-if="paper.closeOnTime">
+        <el-date-picker
+          v-model="paper.closeTime"
+          type="datetime"
+          placeholder="请选择日期时间"
+        ></el-date-picker>
+      </el-form-item>
       <div>
         <div v-for="(item, index) in paper.questions" :key="index" class="question">
           <question
@@ -91,6 +101,24 @@
           }
         }
       };
+
+      const validateOpenTime = (rule, value, callback) => {
+        if (this.paper.closeOnTime && this.paper.openLater) {
+          if (new Date(this.paper.closeTime) - new Date(this.paper.openTime) <= 0) {
+            callback(new Error('结束时间应该迟于开始时间'));
+          }
+        }
+        this.$refs.form.validateField('close_time');
+      };
+
+      const validateCloseTime = (rule, value, callback) => {
+        if (this.paper.closeOnTime && this.paper.openLater) {
+          if (new Date(this.paper.closeTime) - new Date(this.paper.openTime) <= 0) {
+            callback(new Error('结束时间应该迟于开始时间'));
+          }
+        }
+        this.$refs.form.validateField('open_time');
+      };
       const rules = {
         title: [
           { required: true, message: '请输入标题', trigger: 'blur' },
@@ -109,6 +137,12 @@
         questions: [
           { validator: validateQuestions, trigger: 'submit' },
         ],
+        open_time: [
+          { validator: validateOpenTime, trigger: 'change' },
+        ],
+        close_time: [
+          { validator: validateCloseTime, trigger: 'change' },
+        ]
       };
       return {
         rules,
@@ -117,11 +151,13 @@
           password: '',
           title: '',
           openLater: false,
-          openTime: null,
+          openTime: '',
           time_limit: 60,
           questions: [],
           answers: [],
           repeat_limit: 1,
+          closeOnTime: false,
+          closeTime: '',
         },
         addingQuestion: false,
         loading: false,
@@ -143,7 +179,9 @@
             });
             paper.needPassword = !!paper.password;
             paper.openLater = !!paper.open_time;
-            paper.openTime = new Date(paper.open_time);
+            paper.openTime = paper.open_time ? new Date(paper.open_time) : '';
+            paper.closeOnTime = !!paper.close_time;
+            paper.closeTime = paper.close_time ? new Date(paper.close_time) : '';
             this.paper = paper;
           }
         });
@@ -203,8 +241,10 @@
               need_password: this.paper.needPassword,
               password: this.paper.needPassword ? this.paper.password : undefined,
               open_later: this.paper.openLater,
-              open_time: this.paper.openTime,
+              open_time: this.paper.openLater ? this.paper.openTime : undefined,
               repeat_limit: this.paper.repeat_limit,
+              close_on_time: this.paper.closeOnTime,
+              close_time: this.paper.closeOnTime ? this.paper.closeTime : undefined,
               questions,
               answers,
             }).then(response => {

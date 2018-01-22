@@ -13,6 +13,8 @@ class PaperRequest extends Request
             'password' => 'required_if:need_password,true|string|min:1',
             'open_later' => 'boolean',
             'open_time' => 'required_if:open_later,true|date',
+            'close_on_time' => 'boolean',
+            'close_time' => 'required_if:close_on_time,true|date',
             'questions' => 'required|array|min:1',
             'answers' => 'required|array',
             'repeat_limit' => 'required|numeric|min:1'

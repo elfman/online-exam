@@ -32,7 +32,7 @@ class PapersController extends Controller
     public function myPapers()
     {
         $papers = Paper::where('creator_id', Auth::id())->select(
-            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'password', 'participation_count', 'created_at', 'open_time')
+            'id', 'creator_id', 'title', 'total_score', 'content', 'time_limit', 'password', 'participation_count', 'created_at', 'open_time', 'close_time')
             ->orderBy('created_at')->get();
         return response()->json([
             'errors' => 0,
@@ -71,6 +71,10 @@ class PapersController extends Controller
             $data['open_time'] = $request->get('open_time');
         }
 
+        if ($request->get('close_on_time')) {
+            $data['close_time'] = $request->get('close_time');
+        }
+
 		$paper = Paper::create($data);
         return response()->json([
             'error' => 0,
@@ -104,6 +108,7 @@ class PapersController extends Controller
 
         $data['password'] = $request->get('need_password') ? $request->get('password') : null;
         $data['open_time'] = $request->get('open_later') ? new DateTime($request->get('open_time')) : null;
+        $data['close_time'] = $request->get('close_on_time') ? new DateTime($request->get('close_time')) : null;
 
 		$paper->update($data);
 

@@ -40665,6 +40665,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40698,12 +40708,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       }
     };
+
+    var validateOpenTime = function validateOpenTime(rule, value, callback) {
+      if (_this.paper.closeOnTime && _this.paper.openLater) {
+        if (new Date(_this.paper.closeTime) - new Date(_this.paper.openTime) <= 0) {
+          callback(new Error('结束时间应该迟于开始时间'));
+        }
+      }
+      _this.$refs.form.validateField('close_time');
+    };
+
+    var validateCloseTime = function validateCloseTime(rule, value, callback) {
+      if (_this.paper.closeOnTime && _this.paper.openLater) {
+        if (new Date(_this.paper.closeTime) - new Date(_this.paper.openTime) <= 0) {
+          callback(new Error('结束时间应该迟于开始时间'));
+        }
+      }
+      _this.$refs.form.validateField('open_time');
+    };
     var rules = {
       title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
       time_limit: [{ required: true, message: '请输入考试时长', trigger: 'blur' }, { validator: validateDigit, trigger: 'blur' }],
       repeat_limit: [{ required: true, message: '请输入最多能重复考试的次数', trigger: 'blur' }, { validator: validateDigit, trigger: 'blur' }],
       password: [{ validator: validatePassword, trigger: 'blur' }],
-      questions: [{ validator: validateQuestions, trigger: 'submit' }]
+      questions: [{ validator: validateQuestions, trigger: 'submit' }],
+      open_time: [{ validator: validateOpenTime, trigger: 'change' }],
+      close_time: [{ validator: validateCloseTime, trigger: 'change' }]
     };
     return {
       rules: rules,
@@ -40712,11 +40742,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         password: '',
         title: '',
         openLater: false,
-        openTime: null,
+        openTime: '',
         time_limit: 60,
         questions: [],
         answers: [],
-        repeat_limit: 1
+        repeat_limit: 1,
+        closeOnTime: false,
+        closeTime: ''
       },
       addingQuestion: false,
       loading: false
@@ -40741,7 +40773,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           });
           paper.needPassword = !!paper.password;
           paper.openLater = !!paper.open_time;
-          paper.openTime = new Date(paper.open_time);
+          paper.openTime = paper.open_time ? new Date(paper.open_time) : '';
+          paper.closeOnTime = !!paper.close_time;
+          paper.closeTime = paper.close_time ? new Date(paper.close_time) : '';
           _this2.paper = paper;
         }
       });
@@ -40803,8 +40837,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             need_password: _this3.paper.needPassword,
             password: _this3.paper.needPassword ? _this3.paper.password : undefined,
             open_later: _this3.paper.openLater,
-            open_time: _this3.paper.openTime,
+            open_time: _this3.paper.openLater ? _this3.paper.openTime : undefined,
             repeat_limit: _this3.paper.repeat_limit,
+            close_on_time: _this3.paper.closeOnTime,
+            close_time: _this3.paper.closeOnTime ? _this3.paper.closeTime : undefined,
             questions: questions,
             answers: answers
           }).then(function (response) {
@@ -41009,6 +41045,47 @@ var render = function() {
                         _vm.$set(_vm.paper, "openTime", $$v)
                       },
                       expression: "paper.openTime"
+                    }
+                  })
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { staticStyle: { "margin-bottom": "8px" }, attrs: { label: "" } },
+            [
+              _c(
+                "el-checkbox",
+                {
+                  model: {
+                    value: _vm.paper.closeOnTime,
+                    callback: function($$v) {
+                      _vm.$set(_vm.paper, "closeOnTime", $$v)
+                    },
+                    expression: "paper.closeOnTime"
+                  }
+                },
+                [_vm._v("是否定时关闭")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.paper.closeOnTime
+            ? _c(
+                "el-form-item",
+                { attrs: { label: "结束时间", prop: "close_time" } },
+                [
+                  _c("el-date-picker", {
+                    attrs: { type: "datetime", placeholder: "请选择日期时间" },
+                    model: {
+                      value: _vm.paper.closeTime,
+                      callback: function($$v) {
+                        _vm.$set(_vm.paper, "closeTime", $$v)
+                      },
+                      expression: "paper.closeTime"
                     }
                   })
                 ],

@@ -53,7 +53,7 @@ class ScoresController extends Controller
                     'open_time' => (new DateTime($paper->open_time))->format('c'),
                 ]);
             }
-            $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+            $deadline = $this->getScoreDeadline($score->start_time, $paper);
             if ($score->score === null && $deadline > new DateTime()) { // 未提交，返回题目继续
                 return response()->json([
                     'errors' => 2,
@@ -119,7 +119,7 @@ class ScoresController extends Controller
             'start_time' => now(),
         ]);
 
-        $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+        $deadline = $this->getScoreDeadline($score->start_time, $paper);
         $cacheData = [
             'score_id' => $score->id,
             'deadline' => $deadline,
@@ -176,7 +176,7 @@ class ScoresController extends Controller
             ]);
         }
 
-        $deadline = $this->getScoreDeadline($score->start_time, $paper->time_limit);
+        $deadline = $this->getScoreDeadline($score->start_time, $paper);
         if ($deadline->add(new \DateInterval('PT30S')) < new DateTime()) { //考虑延迟，限时可推迟20秒
             $isOvertime = true;
             if ($score->score === null) {
@@ -261,9 +261,16 @@ class ScoresController extends Controller
         return $this->answer_cache_prefix . $user_id . '_' . $paper_id;
     }
 
-    public function getScoreDeadline($startTime, $timeLimit)
+    public function getScoreDeadline($startTime, $paper)
     {
-        return (new DateTime($startTime))->add(new \DateInterval('PT' . $timeLimit . 'M'));
+        $deadline = (new DateTime($startTime))->add(new \DateInterval('PT' . $paper->time_limit . 'M'));
+        if ($paper->close_time !== null) {
+            $closeTime = new DateTime($paper->close_time);
+            if ($deadline > $closeTime) {
+                return $closeTime;
+            }
+        }
+        return $deadline;
     }
 
 
