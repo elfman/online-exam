@@ -25,7 +25,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 axios.interceptors.response.use(res => {
   if (res.status === 401) {
-    localStorage.removeItem('token');
+    app.$store.commit(types.CLEAR_USER_INFO);
+    app.$store.commit(types.CLEAR_AUTH_INFO);
     app.$router.push({ name: 'login', query: { redirect: app.$route.fullPath } });
   }
   return res;

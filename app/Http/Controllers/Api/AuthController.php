@@ -25,8 +25,8 @@ class AuthController extends Controller {
         }
 
         return response()->json([
-            'errors' => ['Unauthorized']
-        ], 401);
+            'errors' => 'Unauthorized'
+        ]);
     }
 
     public function register(UserRequest $request)

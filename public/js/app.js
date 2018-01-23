@@ -36915,7 +36915,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 __WEBPACK_IMPORTED_MODULE_6_axios___default.a.interceptors.response.use(function (res) {
   if (res.status === 401) {
-    localStorage.removeItem('token');
+    app.$store.commit(__WEBPACK_IMPORTED_MODULE_8__store_mutationTypes__["a" /* default */].CLEAR_USER_INFO);
+    app.$store.commit(__WEBPACK_IMPORTED_MODULE_8__store_mutationTypes__["a" /* default */].CLEAR_AUTH_INFO);
     app.$router.push({ name: 'login', query: { redirect: app.$route.fullPath } });
   }
   return res;
@@ -37318,10 +37319,10 @@ var actions = {
     var commit = _ref.commit;
 
     return new Promise(function () {
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/login', data).then(function (response) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/auth/login', data).then(function (response) {
         var data = response.data;
         if (!data.errors) {
-          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
@@ -37337,10 +37338,10 @@ var actions = {
     var commit = _ref2.commit;
 
     return new Promise(function () {
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('api/auth/register', data).then(function (response) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/auth/register', data).then(function (response) {
         var data = response.data;
         if (!data.errors) {
-          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.token;
+          __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_AUTH_INFO, data);
           commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].SET_USER_INFO, data.user);
           var redirect = global.app.$route.query.redirect;
@@ -37355,12 +37356,12 @@ var actions = {
   logout: function logout(_ref3) {
     var commit = _ref3.commit;
 
-    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('api/auth/logout').then(function (res) {
+    __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/auth/logout').then(function (res) {
       var data = res.data;
       if (!data.errors) {
-        window.localStorage.removeItem('token');
         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.defaults.headers.common['Authorization'] = '';
         commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_USER_INFO);
+        commit(__WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_AUTH_INFO);
         app.$router.push('/login');
       }
     });
@@ -37383,6 +37384,8 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, __WEBPACK_IMPORTED
   state.name = null;
   state.id = null;
 }), _defineProperty(_mutations, __WEBPACK_IMPORTED_MODULE_1__mutationTypes__["a" /* default */].CLEAR_AUTH_INFO, function (state) {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expires');
   state.token = null;
   state.expires = null;
 }), _mutations);
@@ -38956,7 +38959,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "\n.el-tabs__item {\n    font-size: 17px;\n}\n", ""]);
+exports.push([module.i, "\n.el-tabs__item {\n  font-size: 17px;\n}\n", ""]);
 
 // exports
 
@@ -39066,77 +39069,77 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: {
-        Navbar: __WEBPACK_IMPORTED_MODULE_0__components_user_Navbar_vue___default.a
-    },
-    data: function data() {
-        var _this = this;
+  components: {
+    Navbar: __WEBPACK_IMPORTED_MODULE_0__components_user_Navbar_vue___default.a
+  },
+  data: function data() {
+    var _this = this;
 
-        var validatePass = function validatePass(rule, value, callback) {
-            if (_this.register.passwordConfirm.length > 0) {
-                _this.$refs.register.validateField('passwordConfirm');
-            }
-        };
-        var validatePass2 = function validatePass2(rule, value, callback) {
-            if (value !== _this.register.password) {
-                callback(new Error('两次输入的密码不一致！'));
-            } else {
-                callback();
-            }
-        };
-        var registerRules = {
-            email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { type: 'email', message: '请输入有效的email地址', trigger: 'blur' }],
-            name: [{ required: true, message: '请输入用户名', trigger: 'blur' }, { min: 3, message: '用户名至少3个字符', trigger: 'blur' }],
-            password: [{ required: true, message: '请输入密码', trigger: 'blur' }, { min: 6, message: '密码至少6个字符', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
-            passwordConfirm: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { validator: validatePass2, trigger: 'blur' }]
-        };
-        var loginRules = {
-            email: registerRules.email,
-            password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-        };
+    var validatePass = function validatePass(rule, value, callback) {
+      if (_this.register.passwordConfirm.length > 0) {
+        _this.$refs.register.validateField('passwordConfirm');
+      }
+    };
+    var validatePass2 = function validatePass2(rule, value, callback) {
+      if (value !== _this.register.password) {
+        callback(new Error('两次输入的密码不一致！'));
+      } else {
+        callback();
+      }
+    };
+    var registerRules = {
+      email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { type: 'email', message: '请输入有效的email地址', trigger: 'blur' }],
+      name: [{ required: true, message: '请输入用户名', trigger: 'blur' }, { min: 3, message: '用户名至少3个字符', trigger: 'blur' }],
+      password: [{ required: true, message: '请输入密码', trigger: 'blur' }, { min: 6, message: '密码至少6个字符', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
+      passwordConfirm: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { validator: validatePass2, trigger: 'blur' }]
+    };
+    var loginRules = {
+      email: registerRules.email,
+      password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+    };
 
-        var defaultTab = this.$route.path.endsWith('login') ? 'login' : 'register';
-        console.log(defaultTab);
+    var defaultTab = this.$route.path.endsWith('login') ? 'login' : 'register';
+    console.log(defaultTab);
 
-        return {
-            loginRules: loginRules,
-            registerRules: registerRules,
-            login: {
-                email: '',
-                password: '',
-                remember: false
-            },
-            register: {
-                name: '',
-                email: '',
-                password: '',
-                passwordConfirm: '',
-                service: false
-            },
-            currentTab: this.$route.path.endsWith('login') ? 'login' : 'register'
-        };
-    },
+    return {
+      loginRules: loginRules,
+      registerRules: registerRules,
+      login: {
+        email: '',
+        password: '',
+        remember: false
+      },
+      register: {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        service: false
+      },
+      currentTab: this.$route.path.endsWith('login') ? 'login' : 'register'
+    };
+  },
 
-    methods: {
-        onLogin: function onLogin() {
-            var _this2 = this;
+  methods: {
+    onLogin: function onLogin() {
+      var _this2 = this;
 
-            this.$refs.login.validate(function (valid) {
-                if (valid) {
-                    _this2.$store.dispatch('login', _this2.login);
-                }
-            });
-        },
-        onRegister: function onRegister() {
-            var _this3 = this;
-
-            this.$refs.register.validate(function (valid) {
-                if (valid) {
-                    _this3.$store.dispatch('register', _this3.register);
-                }
-            });
+      this.$refs.login.validate(function (valid) {
+        if (valid) {
+          _this2.$store.dispatch('login', _this2.login);
         }
+      });
+    },
+    onRegister: function onRegister() {
+      var _this3 = this;
+
+      this.$refs.register.validate(function (valid) {
+        if (valid) {
+          _this3.$store.dispatch('register', _this3.register);
+        }
+      });
     }
+  }
 });
 
 /***/ }),
@@ -39268,6 +39271,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   })),
   methods: {
     handleCommand: function handleCommand(command) {
+      console.log(command);
       switch (command) {
         case 'logout':
           {
@@ -39277,6 +39281,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     logout: function logout() {
+      console.log('caller');
       this.$store.dispatch('logout');
     }
   }

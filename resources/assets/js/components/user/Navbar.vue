@@ -73,6 +73,7 @@
     },
     methods: {
       handleCommand(command) {
+        console.log(command);
         switch (command) {
           case 'logout': {
             this.logout();
@@ -81,6 +82,7 @@
         }
       },
       logout() {
+        console.log('caller');
         this.$store.dispatch('logout');
       }
     }
