@@ -89,8 +89,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
   import AnswerSheet from '../components/AnswerSheet.vue';
   import ScoreChart from '../components/ScoreChart.vue';
   import QuestionChart from '../components/QuestionChart.vue';
@@ -113,7 +111,10 @@
                 return value + '%';
               }
             },
-          }]
+          }],
+          xAxes: [{
+            barPercentage: 1,
+          }],
         },
         legend: {
           display: false
@@ -140,7 +141,10 @@
             ticks: {
               min: 0,
             }
-          }]
+          }],
+          xAxes: [{
+            barPercentage: 1,
+          }],
         },
         tooltips: {
           callbacks: {

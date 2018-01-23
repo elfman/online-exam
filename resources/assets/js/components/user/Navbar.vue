@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  const { mapState } = Vuex;
 
   export default {
     data() {

@@ -71,7 +71,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import Question from '../components/Question.vue';
 
   export default {

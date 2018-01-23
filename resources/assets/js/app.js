@@ -12,16 +12,10 @@
  */
 
 
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import store from './store/store';
 import routes from './routes';
 import App from './App.vue';
-import ElementUI from 'element-ui';
-import axios from 'axios';
-import _ from 'lodash';
 import types from './store/mutationTypes';
-import 'element-ui/lib/theme-chalk/index.css';
 
 axios.interceptors.response.use(res => {
   if (res.status === 401) {
@@ -39,11 +33,8 @@ axios.interceptors.response.use(res => {
   return Promise.reject(error);
 });
 
+Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(ElementUI);
-
-Object.defineProperty(Vue.prototype, '$axios', {value: axios});
-Object.defineProperty(Vue.prototype, '$_', {value: _});
 
 const router = new VueRouter({
   routes,

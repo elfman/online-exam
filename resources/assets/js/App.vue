@@ -10,9 +10,7 @@
 </template>
 
 <script>
-    import Vue from 'vue';
     import Navbar from './components/user/Navbar.vue';
-    import VueRouter from 'vue-router';
 
     export default {
         components: {
