@@ -25,7 +25,8 @@ class AuthController extends Controller {
         }
 
         return response()->json([
-            'errors' => 'Unauthorized'
+            'errors' => '1',
+            'msg' => 'login failed',
         ]);
     }
 
